@@ -2,7 +2,7 @@
   <div class="sidebar-container">
     <div class="head-wrap">
       <span class="settings-left-icon">
-        <Icon icon="mingcute:arrow-left-fill" />
+        <Icon icon="mingcute:arrow-left-fill" @click="backToDashboard" />
       </span>
       <span class="head-wrap-text">Settings</span>
     </div>
@@ -15,7 +15,7 @@
         <span class="sidebar-icon">
           <Icon icon="mdi:user" />
         </span>
-        <span>Account</span>
+        <span class="sidebar-span-text">Account</span>
       </div>
 
       <div
@@ -28,16 +28,63 @@
         </span>
         <span class="sidebar-span-text">Devices</span>
       </div>
+
+      <div
+        class="sidebar-item"
+        :class="selectedItem === 'add-device' ? 'selected-item' : ''"
+        @click="selected('add-device')"
+      >
+        <span class="sidebar-icon">
+          <Icon icon="bi:phone" />
+        </span>
+        <span class="sidebar-span-text">Add Device</span>
+      </div>
+
+      <div
+        class="sidebar-item"
+        :class="selectedItem === 'groups' ? 'selected-item' : ''"
+        @click="selected('groups')"
+      >
+        <span class="sidebar-icon">
+          <Icon icon="ic:round-folder" />
+        </span>
+        <span class="sidebar-span-text">Groups</span>
+      </div>
+
+      <div
+        class="sidebar-item"
+        :class="selectedItem === 'add-group' ? 'selected-item' : ''"
+        @click="selected('add-group')"
+      >
+        <span class="sidebar-icon">
+          <Icon icon="material-symbols:open-jam" />
+        </span>
+        <span class="sidebar-span-text">Add Group</span>
+      </div>
+
+      <div
+        class="sidebar-item"
+        :class="selectedItem === 'users' ? 'selected-item' : ''"
+        @click="selected('users')"
+        v-show="user.administrator"
+      >
+        <span class="sidebar-icon">
+          <Icon icon="mdi:users" />
+        </span>
+        <span class="sidebar-span-text">Users</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { Icon } from '@iconify/vue'
+import { userData } from '~/store/userData'
 export default {
   data() {
     return {
       selectedItem: 'devices',
+      user: userData().user,
     }
   },
   components: {
@@ -47,6 +94,9 @@ export default {
     selected(item) {
       this.selectedItem = item
       this.$emit('changeBody', item)
+    },
+    backToDashboard() {
+      this.$router.push('/dashboard')
     },
   },
 }
@@ -67,22 +117,23 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: left;
-  padding: 1rem 2rem;
+  align-items: center;
+  padding: 1rem 1.5rem;
   gap: 2rem;
   border-bottom: 1px solid #e0e0e0;
 }
 
 .settings-left-icon {
   cursor: pointer;
-  color: #111;
+  color: #222;
   font-size: 1.3rem;
-  font-weight: 800;
+  font-weight: 300;
 }
 
 .head-wrap-text {
-  font-size: 1.3rem;
-  color: #333;
-  font-weight: 700;
+  font-size: 1.2rem;
+  color: #222;
+  font-weight: 600;
 }
 
 .sidebar-items {
@@ -106,9 +157,10 @@ export default {
   color: #888;
 }
 .sidebar-span-text {
-  font-size: 1rem;
+  font-size: 0.9rem;
+  font-family: 'Roboto', sans-serif !important;
 }
 .selected-item {
-  background: #e0e0e0;
+  background: #eeeded !important;
 }
 </style>

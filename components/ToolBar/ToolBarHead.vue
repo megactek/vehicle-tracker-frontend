@@ -20,7 +20,7 @@
           type="text"
           name="search"
           id="search"
-          placeholder="Search Sevices"
+          placeholder="Search Devices"
           @focus="setFocus"
           @mouseleave="reverseFocus"
           :class="isFocused ? 'search-focus' : ''"
@@ -28,7 +28,7 @@
         />
       </div>
 
-      <div class="tool tool-pri">
+      <div class="tool tool-pri tool-pri-last">
         <Icon icon="clarity:plus-line" @click="displayPanel" />
       </div>
     </div>
@@ -56,9 +56,11 @@ export default {
     },
     setCurrentMenuToMap() {
       this.currentMenu = 'map'
+      this.$emit('showDropDown')
     },
     setCurrentMenuToMenu() {
       this.currentMenu = 'menu'
+      this.$emit('showDropDown')
     },
     displayPanel() {
       this.$emit('changePanel', 'settings')
@@ -68,36 +70,41 @@ export default {
 </script>
 <style scoped>
 .container {
-  padding: 1rem 2rem;
+  padding: 1rem;
   display: flex;
   box-shadow: 1px 2px 4px #888;
-  width: 400px;
-  height: 50px;
-  background-color: transparent;
+  width: 350px;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  height: 60px;
+  background-color: #fff;
 }
 .tools {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-evenly;
   gap: 1rem;
 }
 
 .tool-pri {
   cursor: pointer;
   font-size: 1.3rem;
+  color: #757474;
 }
 
 #search {
-  border: 1px solid #666;
+  border: 1px solid #ddd;
   height: 40px;
+  background: #f4f4f4;
   border-radius: 5px;
-  padding-left: 10px;
+  padding-left: 15px;
   color: #444;
+  width: 95%;
 }
 
 #search:hover {
-  border: 1px solid #111;
+  border: 1px solid #777;
 }
 
 #search:focus {
@@ -106,6 +113,61 @@ export default {
 
 .search-focus {
   outline: none !important;
-  border: 2px solid var(--color-bg-primary) !important;
+  border: 1px solid var(--color-bg-primary) !important;
+}
+
+.tool-pri-last {
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .container {
+    width: 100%;
+    height: 70px;
+    padding: 1rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  #search {
+    width: 85vw;
+  }
+
+  .tool-pri {
+    width: 5vw;
+  }
+  .tools {
+    gap: 0.5rem;
+  }
+
+  @media (max-width: 550px) {
+    #search {
+      width: 80vw;
+    }
+
+    .tool-pri {
+      width: 5vw;
+    }
+    .tools-pri-last {
+      padding-right: 0.5rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    #search {
+      width: 70vw;
+    }
+
+    .tool-pri {
+      width: 8vw;
+    }
+    .tools {
+      gap: 0.5rem;
+    }
+    .tools-pri-last {
+      padding-right: 0;
+    }
+  }
 }
 </style>

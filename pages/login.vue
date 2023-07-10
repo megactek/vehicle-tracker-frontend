@@ -26,7 +26,7 @@
               name="email"
               placeholder="Email*"
               required
-              @keypress="onKeyUp"
+              @keyup="onKeyUp"
               @mousemove="onKeyUp"
             />
           </div>
@@ -37,7 +37,7 @@
               type="password"
               name="password"
               required
-              @keypress="onKeyUp"
+              @keyup="onKeyUp"
               @mousemove="onKeyUp"
             />
           </div>
@@ -79,6 +79,21 @@ export default {
   },
 
   methods: {
+    async getDevices() {
+      const credentials = btoa(this.inputEmail + ':' + this.inputPassword)
+      const authorizationHeader = `Basic ${credentials}`
+      const res = await fetch(`http://localhost:8082/api/devices`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authorizationHeader,
+        },
+      })
+      const returnValue = await res.json()
+      console.log(returnValue)
+      userData().logDevices(returnValue)
+      userData().logCredential(authorizationHeader)
+    },
     async onLogin() {
       const formData = new URLSearchParams()
       formData.append('email', this.inputEmail)
@@ -89,9 +104,9 @@ export default {
         body: formData,
       })
       const returnValue = await res.json()
-      console.log(returnValue)
 
       if (res.ok) {
+        this.getDevices()
         this.msg = 'Login Successful'
         this.successAlert = true
         this.loading = true
@@ -176,6 +191,10 @@ export default {
   color: #333;
 }
 
+input:focus {
+  outline: none;
+}
+
 button {
   width: 300px;
   border-radius: 5px;
@@ -203,5 +222,38 @@ button {
   border: 1px solid var(--color-bg-primary);
   background: var(--color-bg-primary);
   cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  singup-container {
+    height: 100vh;
+    width: 100vw;
+    margin: 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .left-cover {
+    width: 0;
+    display: none;
+  }
+
+  .right-cover {
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    max-width: 1200px;
+  }
+  .right-cover-first-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
 }
 </style>

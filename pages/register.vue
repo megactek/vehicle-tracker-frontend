@@ -26,8 +26,7 @@
               name="username"
               placeholder="Username*"
               required
-              @keypress="onKeyUp"
-              @mousemove="onKeyUp"
+              @keyup="onKeyUp"
             />
           </div>
           <div class="input-field">
@@ -37,8 +36,7 @@
               name="email"
               placeholder="Email*"
               required
-              @keypress="onKeyUp"
-              @mousemove="onKeyUp"
+              @keyup="onKeyUp"
             />
           </div>
           <div class="input-field">
@@ -48,8 +46,7 @@
               type="password"
               name="password"
               required
-              @keypress="onKeyUp"
-              @mousemove="onKeyUp"
+              @keyup="onKeyUp"
             />
           </div>
           <button
@@ -72,7 +69,7 @@ import LoadingApp from '../components/LoadingApp.vue'
 import NuxtLogo from '../components/NuxtLogo.vue'
 
 definePageMeta({
-  title: "Trakka | Register"
+  title: 'Trakka | Register',
 })
 export default {
   // eslint-disable-next-line vue/component-definition-name-casing, vue/multi-word-component-names
@@ -163,6 +160,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 0 auto;
   padding-left: 300px;
 }
 
@@ -193,6 +191,10 @@ export default {
   color: #333;
 }
 
+input:focus {
+  outline: none;
+}
+
 button {
   width: 300px;
   border-radius: 5px;
@@ -210,5 +212,38 @@ button {
   border: 1px solid var(--color-bg-primary);
   background: var(--color-bg-primary);
   cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+  singup-container {
+    height: 100vh;
+    width: 100vw;
+    margin: 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .left-cover {
+    width: 0;
+    display: none;
+  }
+
+  .right-cover {
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    max-width: 1200px;
+  }
+  .right-cover-first-div {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
 }
 </style>
