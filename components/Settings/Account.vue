@@ -30,6 +30,9 @@
             v-model="inputPassword"
           />
         </div>
+        <div class="error-container" v-if="error">
+          <p class="error-msg">{{ errorMsg }}</p>
+        </div>
       </div>
       <div class="second-flex">
         <div class="el-btn">
@@ -50,6 +53,8 @@ export default {
   data() {
     return {
       inputPassword: '',
+      error: false,
+      errorMsg: '',
     }
   },
   methods: {
@@ -64,22 +69,49 @@ export default {
         this.user.email.length !== 0 &&
         this.inputPassword.length !== 0
       ) {
-        const res = await fetch(
-          `http://localhost:8082/api/users/${this.user.id}`,
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: authorizationHeader,
+        try {
+          const res = await fetch(
+            `http://localhost:8082/api/users/${this.user.id}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: authorizationHeader,
+              },
+              body: JSON.stringify(this.user),
             },
-            body: JSON.stringify(this.user),
-          },
-        )
-        if (res.ok) {
-          const returnData = await res.json()
-          userData().logUser(returnData, true)
-          this.$emit('changeBody', 'devices')
+          )
+          if (res.ok) {
+            const returnData = await res.json()
+            userData().logUser(returnData, true)
+            this.$emit('changeBody', 'devices')
+          } else {
+            this.error = true
+            if (res.status === 401) {
+              this.errorMsg = 'Password incorrect'
+              setTimeout(() => {
+                this.error = false
+                this.errorMsg = ''
+              }, 3000)
+            } else {
+              this.errorMsg = 'Cannot update profile'
+              setTimeout(() => {
+                this.error = false
+                this.errorMsg = ''
+              }, 3000)
+            }
+          }
+        } catch (e) {
+          this.error = true
+          this.errorMsg = e.message
         }
+      } else {
+        this.error = true
+        this.errorMsg = 'Name cannot be empty'
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
       }
     },
   },

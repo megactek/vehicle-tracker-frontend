@@ -33,3 +33,15 @@
   width: var(--container-width-lg);
   margin: 0 auto;
 }
+
+.error-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.error-msg {
+  color: red;
+  text-align: center;
+}

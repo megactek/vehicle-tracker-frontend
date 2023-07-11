@@ -38,19 +38,18 @@
         </div>
         <div v-show="dropDownOn">
           <div class="el">
-            <select name="groups" id="groups">
+            <select name="groups" id="groups" v-model="uploadData.groupId">
               <option
                 v-for="group in groups"
                 :key="group.id"
-                value="{{group.name}}"
-                id="{{group.id}}"
+                :value="group.groupId"
               >
                 {{ group.name }}
               </option>
             </select>
           </div>
           <div class="el">
-            <input type="text" placeholder="Model" />
+            <input type="text" placeholder="Model" v-model="uploadData.model" />
           </div>
         </div>
       </div>
@@ -62,6 +61,9 @@
           Save
         </button>
       </div>
+      <div class="error-container" v-if="error">
+        <p class="error-msg">{{ errorMsg }}</p>
+      </div>
     </form>
   </div>
 </template>
@@ -71,12 +73,29 @@ import { Icon } from '@iconify/vue'
 export default {
   data() {
     return {
-      defaultDevice: userData().devices[userData().devices.length - 1],
-      isBtnAllowed: false,
       name: '',
       uniqueId: '',
+      defaultDevice: userData().devices[userData().devices.length - 1],
+      isBtnAllowed: false,
       groups: userData().groups,
       dropDownOn: false,
+      authCred: userData().credentials,
+      error: false,
+      errorMsg: '',
+      uploadData: {
+        name: '',
+        uniqueId: '',
+        status: 'offline',
+        disabled: false,
+        lastUpdate: new Date().toISOString(),
+        positionId: 0,
+        groupId: 0,
+        phone: '',
+        model: '',
+        contact: '',
+        category: '',
+        attributes: {},
+      },
     }
   },
   components: {
@@ -91,7 +110,59 @@ export default {
         this.isBtnAllowed = true
       }
     },
+    getValues() {
+      const name = document.getElementById('name').value
+      const uniqueId = document.getElementById('uniqueId').value
+
+      if (name.length === 0 || uniqueId.length === 0) {
+        this.error = true
+        this.errorMsg = 'name and uniqueId are required fields'
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      } else {
+        return {
+          name,
+          uniqueId,
+        }
+      }
+    },
+    async addNewDevice() {
+      try {
+        const { name, uniqueId } = this.getValues()
+        console.log(name, uniqueId, this.uploadData.groupId)
+        this.uploadData.name = name
+        this.uploadData.uniqueId = uniqueId
+        const res = await fetch('http://localhost:8082/api/devices', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+          body: JSON.stringify(this.uploadData),
+        })
+        if (res.ok) {
+          this.$emit('changeBody', 'devices')
+        } else {
+          this.error = true
+          this.errorMsg = 'cannot add new device'
+          setTimeout(() => {
+            this.error = false
+            this.errorMsg = ''
+          }, 3000)
+        }
+      } catch (e) {
+        this.error = true
+        this.errorMsg = e.message
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
+    },
   },
+
   mounted() {
     this.name = document.getElementById('name').value
     this.uniqueId = document.getElementById('uniqueId').value

@@ -48,7 +48,7 @@
           >
             Submit
           </button>
-          <p :class="successAlert ? 'success-msg' : 'error-msg'">{{ msg }}</p>
+          <!-- <p :class="successAlert ? 'success-msg' : 'error-msg'">{{ msg }}</p> -->
         </form>
       </div>
     </div>

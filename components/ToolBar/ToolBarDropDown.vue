@@ -26,14 +26,16 @@ export default {
   display: flex;
   flex-direction: column;
   width: 350px;
-  height: 100%;
-  margin-top: 0.5rem;
+  height: 90%;
+  margin-top: 0.1rem;
+  border: 1px solid #e0e0e0;
 }
 .drop-down-container {
   display: flex;
   flex-direction: column;
   padding: 0.5rem 0;
   background: #fff;
+  border-right: 1px solid #e0e0e0;
   width: 350px;
   height: 100%;
 }

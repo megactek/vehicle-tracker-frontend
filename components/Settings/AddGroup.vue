@@ -13,6 +13,9 @@
           @keyup="validateInput"
         />
       </div>
+      <div class="error-container" v-if="error">
+        <p class="error-msg">{{ errorMsg }}</p>
+      </div>
       <button
         type="submit"
         :class="isBtnActive ? 'active-btn' : 'inactive-btn'"
@@ -31,6 +34,8 @@ export default {
       inputName: '',
       isBtnActive: false,
       authCred: userData().credentials,
+      error: false,
+      errorMsg: '',
     }
   },
   methods: {
@@ -40,24 +45,48 @@ export default {
       }
     },
     async addNewGroup() {
-      const res = await fetch(`http://localhost:8082/api/groups`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this.authCred,
-        },
-        body: JSON.stringify({
-          name: this.inputName,
-          id: userData().groups.length,
-          groupId: userData().groups.length,
-          attributes: {},
-        }),
-      })
-      const returnValue = await res.json()
-      console.log(returnValue)
+      if (this.inputName.length === 0) {
+        this.error = true
+        this.errorMsg = 'name is a required field'
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      } else {
+        try {
+          const res = await fetch(`http://localhost:8082/api/groups`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: this.authCred,
+            },
+            body: JSON.stringify({
+              name: this.inputName,
+              groupId: userData().groups.length,
+              attributes: {},
+            }),
+          })
+          const returnValue = await res.json()
+          console.log(returnValue)
 
-      if (res.ok) {
-        this.$emit('changeBody', 'groups')
+          if (res.ok) {
+            this.$emit('changeBody', 'groups')
+          } else {
+            this.error = true
+            this.errorMsg = 'cannot create group'
+            setTimeout(() => {
+              this.error = false
+              this.errorMsg = ''
+            }, 3000)
+          }
+        } catch (e) {
+          this.error = true
+          this.errorMsg = e.message
+          setTimeout(() => {
+            this.error = false
+            this.errorMsg = ''
+          }, 3000)
+        }
       }
     },
   },
