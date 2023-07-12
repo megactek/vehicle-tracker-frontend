@@ -35,7 +35,7 @@
         @click="selected('add-device')"
       >
         <span class="sidebar-icon">
-          <Icon icon="bi:phone" />
+          <Icon icon="gridicons:add" />
         </span>
         <span class="sidebar-span-text">Add Device</span>
       </div>
@@ -162,5 +162,11 @@ export default {
 }
 .selected-item {
   background: #eeeded !important;
+}
+
+@media (max-width: 1000px) {
+  .sidebar-container {
+    width: 300px;
+  }
 }
 </style>

@@ -2,11 +2,15 @@
   <div class="parent-container">
     <div class="drop-down-container">
       <div class="drop-dwon-items">
-        <div class="drop-down-item">
-          <Icon icon="mdi:user" class="icon" />
+        <div
+          class="drop-down-item"
+          v-for="device in initialDevices"
+          :key="device.id"
+        >
+          <Icon icon="bxs:map" class="icon" />
           <div class="div">
-            <span>Samsung</span>
-            <span>online</span>
+            <span>{{ device.name }}</span>
+            <span></span>
           </div>
         </div>
       </div>
@@ -15,9 +19,16 @@
 </template>
 <script>
 import { Icon } from '@iconify/vue'
+import { userData } from '~/store/userData'
 export default {
   components: {
     Icon,
+  },
+  props: ['positions', 'devices'],
+  data() {
+    return {
+      initialDevices: userData().getDevices,
+    }
   },
 }
 </script>
@@ -54,10 +65,7 @@ export default {
 
 .icon {
   font-size: 2rem;
-  background: #ddd;
   color: #333;
-  border-radius: 50%;
-  padding: 1.5rem;
 }
 
 .drop-down-item .div {

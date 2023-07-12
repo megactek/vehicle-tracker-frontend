@@ -44,6 +44,7 @@ import { userData } from '~/store/userData'
 import EditGroupModal from '../Modal/EditGroupModal.vue'
 
 export default {
+  props: ['groups', 'getGroups'],
   data() {
     return {
       groups: userData().groups,
@@ -87,10 +88,10 @@ export default {
           })
           const returnValue = await res.json()
           console.log(returnValue)
-          this.getGroups()
+          this.$emit('changeBody', 'add-group')
         } catch (e) {
           // this.error = true
-          // this.errorMsg = e.message
+          // this.errorMsg = e
           // setTimeout(() => {
           //   this.error = false
           //   this.errorMsg = ''
@@ -98,39 +99,6 @@ export default {
         }
       }
     },
-    async getGroups() {
-      try {
-        const res = await fetch(`http://localhost:8082/api/groups`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: this.authCred,
-          },
-        })
-        const returnValue = await res.json()
-        console.log(returnValue)
-        if (res.ok) {
-          userData().logGroups(returnValue)
-        } else {
-          this.error = true
-          this.errorMsg = 'cannot get groups'
-          setTimeout(() => {
-            this.error = false
-            this.errorMsg = ''
-          }, 3000)
-        }
-      } catch (e) {
-        this.error = true
-        this.errorMsg = e.message
-        setTimeout(() => {
-          this.error = false
-          this.errorMsg = ''
-        }, 3000)
-      }
-    },
-  },
-  mounted() {
-    this.getGroups()
   },
 }
 </script>

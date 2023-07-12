@@ -24,29 +24,13 @@
 import { userData } from '~/store/userData'
 
 export default {
+  props: ['users'],
   data() {
     return {
-      users: userData().users,
       authCred: userData().credentials,
     }
   },
-  methods: {
-    async getUsers() {
-      const res = await fetch(`http://localhost:8082/api/users`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this.authCred,
-        },
-      })
-      const returnValue = await res.json()
-      console.log(returnValue)
-      userData().logUsers(returnValue)
-    },
-  },
-  mounted() {
-    this.getUsers()
-  },
+  methods: {},
 }
 </script>
 <style scoped>

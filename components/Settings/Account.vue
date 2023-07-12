@@ -84,7 +84,7 @@ export default {
           if (res.ok) {
             const returnData = await res.json()
             userData().logUser(returnData, true)
-            this.$emit('changeBody', 'devices')
+            this.$emit('changeBody', 'users')
           } else {
             this.error = true
             if (res.status === 401) {

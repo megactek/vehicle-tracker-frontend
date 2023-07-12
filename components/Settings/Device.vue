@@ -30,30 +30,12 @@
 import { userData } from '~/store/userData'
 
 export default {
+  props: ['devices'],
   inject: ['user'],
   data() {
-    return {
-      devices: userData().devices,
-      authCred: userData().credentials,
-    }
+    return {}
   },
-  methods: {
-    async getDevices() {
-      const res = await fetch(`http://localhost:8082/api/devices`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: this.authCred,
-        },
-      })
-      const returnValue = await res.json()
-      console.log(returnValue)
-      userData().logDevices(returnValue)
-    },
-  },
-  mounted() {
-    this.getDevices()
-  },
+  methods: {},
 }
 </script>
 <style scoped>
