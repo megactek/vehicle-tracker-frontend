@@ -62,7 +62,6 @@ export default {
             },
             body: JSON.stringify({
               name: this.inputName,
-              groupId: userData().groups.length,
               attributes: {},
             }),
           })

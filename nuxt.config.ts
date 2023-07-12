@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '@/assets/css/main.css',
     'mapbox-gl/dist/mapbox-gl.css',
   ],
-  plugins: ['@/plugins/antd-ui'],
+  plugins: ['@/plugins/antd-ui', '@/plugins/ws'],
   runtimeConfig: {
     public: {
       mapBoxKey: process.env.NUXT_MAPBOX_API_KEY,

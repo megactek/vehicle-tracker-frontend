@@ -9,7 +9,7 @@
   <div class="settings-container">
     <side-bar-vue @changeBody="changeBody($event)" />
     <div class="body-container">
-      <device-vue v-show="bodyDisplay === 'devices'" />
+      <device-vue v-show="bodyDisplay === 'devices'" :devices="devices" />
       <account-vue
         v-show="bodyDisplay === 'account'"
         @changeBody="changeBody($event)"
@@ -23,6 +23,8 @@
       <groups-vue
         v-show="bodyDisplay === 'groups'"
         @changeBody="changeBody($event)"
+        :groups="groups"
+        :getGroups="getGroups"
       />
 
       <add-group-vue
@@ -33,6 +35,7 @@
       <users-vue
         v-show="bodyDisplay === 'users'"
         @changeBody="changeBody($event)"
+        :users="users"
       />
     </div>
   </div>
@@ -69,11 +72,110 @@ export default {
       alert: false,
       successAlert: false,
       errorAlert: false,
+      authCred: userData().credentials,
+      devices: [],
+      groups: [],
+      users: [],
     }
   },
   methods: {
     changeBody(component) {
       this.bodyDisplay = component
+    },
+    async getUsers() {
+      try {
+        const res = await fetch(`http://localhost:8082/api/users`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+        })
+        if (res.ok) {
+          const returnValue = await res.json()
+          this.users = returnValue
+          console.log(returnValue)
+          userData().logUsers(returnValue)
+        } else {
+          this.error = true
+          this.errorMsg = 'cannot get users'
+          setTimeout(() => {
+            this.error = false
+            this.errorMsg = ''
+          }, 3000)
+        }
+      } catch (e) {
+        this.error = true
+        this.errorMsg = e
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
+    },
+    async getGroups() {
+      try {
+        const res = await fetch(`http://localhost:8082/api/groups`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+        })
+        const returnValue = await res.json()
+        if (res.ok) {
+          console.log(returnValue)
+          this.groups = returnValue
+          userData().logGroups(returnValue)
+        } else {
+          this.error = true
+          this.errorMsg = 'cannot get groups'
+          setTimeout(() => {
+            this.error = false
+            this.errorMsg = ''
+          }, 3000)
+        }
+      } catch (e) {
+        this.error = true
+        this.errorMsg = e.message
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
+    },
+    async getDevices() {
+      try {
+        const res = await fetch(`http://localhost:8082/api/devices`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+        })
+        if (res.ok) {
+          const returnData = await res.json()
+          this.devices = returnData
+          userData().logDevices(returnValue)
+        } else {
+          this.error = true
+          if (res.status === 401) {
+            this.$router.push('/login')
+          } else {
+            this.errorMsg = 'cannot get devices'
+            setTimeout(() => {
+              this.error = false
+              this.errorMsg = ''
+            }, 3000)
+          }
+        }
+      } catch (e) {
+        this.errorMsg = e
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
     },
   },
   mounted() {
@@ -81,13 +183,24 @@ export default {
     if (!data) {
       this.$router.push({ path: '/login' })
     } else {
+      this.getDevices()
+      this.getGroups()
+      this.getUsers()
       this.user = data
     }
+    // useNuxt.$socketStore
   },
   provide() {
     return {
       user: computed(() => this.user),
     }
+  },
+  watch: {
+    bodyDisplay(newVal, oldVal) {
+      this.getDevices()
+      this.getGroups()
+      this.getUsers()
+    },
   },
 }
 </script>
@@ -99,5 +212,13 @@ export default {
 
 .body-container {
   width: 75%;
+}
+
+@media (max-width: 1000px) {
+  .settings-container {
+  }
+
+  .body-container {
+  }
 }
 </style>

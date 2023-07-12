@@ -6,10 +6,14 @@
         @changePanel="changePanel($event)"
         @showDropDown="toggleDropDown"
       />
-      <tool-bar-drop-down v-show="showDropDown" />
+      <tool-bar-drop-down
+        v-show="showDropDown"
+        :positions="positions"
+        :devices="devices"
+      />
     </div>
     <div class="map-container">
-      <mapbox-map />
+      <mapbox-map :positions="positions" />
     </div>
   </div>
 </template>
@@ -17,7 +21,9 @@
 import MapboxMap from '../components/MapboxMap.vue'
 import ToolBarHead from '../components/ToolBar/ToolBarHead.vue'
 import ToolBarDropDown from '../components/ToolBar/ToolBarDropDown.vue'
+import { useWebSocketStore } from '~/plugins/ws'
 
+const webSocketStore = useWebSocketStore()
 export default {
   components: { MapboxMap, ToolBarHead, ToolBarDropDown },
   // eslint-disable-next-line vue/component-definition-name-casing, vue/multi-word-component-names
@@ -26,6 +32,8 @@ export default {
     return {
       // currentPanel:"default"
       showDropDown: false,
+      positions: webSocketStore.positions,
+      devices: webSocketStore.devices,
     }
   },
   methods: {
@@ -36,7 +44,9 @@ export default {
       this.showDropDown = !this.showDropDown
     },
   },
-  mounted() {},
+  mounted() {
+    // this.$pinia.actions.websocket.connect()
+  },
 }
 </script>
 <style scoped>
