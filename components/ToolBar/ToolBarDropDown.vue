@@ -4,13 +4,21 @@
       <div class="drop-dwon-items">
         <div
           class="drop-down-item"
-          v-for="device in initialDevices"
+          v-for="device in filteredDevices"
           :key="device.id"
+          @click="selectDevice(device.id)"
+          :style="
+            device.id === selectedId ? 'background:#e0e0e0;width:100%; ' : ''
+          "
         >
           <Icon icon="bxs:map" class="icon" />
           <div class="div">
             <span>{{ device.name }}</span>
-            <span></span>
+            <span :style="!device.disabled ? 'color:green' : 'color:#444'">{{
+              device.disabled
+                ? `last active: ${new Date(device.lastActive).toLocaleString()}`
+                : 'online'
+            }}</span>
           </div>
         </div>
       </div>
@@ -28,7 +36,32 @@ export default {
   data() {
     return {
       initialDevices: userData().getDevices,
+      filteredDevices: [],
+      selectedId: null,
     }
+  },
+  methods: {
+    getDevices() {
+      // if (this.devices['1'].id === this.positions['1'].deviceId) {
+      //   this.filteredDevices.push({
+      //     id: this.devices['1'].id,
+      //     name: this.devices['1'].name,
+      //     disabled: this.devices['1'].disabled,
+      //     lastActive: this.devices['1'].lastUpdate,
+      //     batteryLevel: this.positions['1'].attributes.batteryLevel,
+      //   })
+      // }
+    },
+    selectDevice(id) {
+      this.selectedId = id
+      this.$emit('selectDevice', id)
+    },
+  },
+  mounted() {
+    this.getDevices()
+    console.log(this.positions)
+    console.log(this.devices)
+    console.log(this.filteredDevices)
   },
 }
 </script>
@@ -61,6 +94,7 @@ export default {
   grid-template-columns: 20% 60%;
   align-items: center;
   padding: 0.5rem 1rem;
+  cursor: pointer;
 }
 
 .icon {
