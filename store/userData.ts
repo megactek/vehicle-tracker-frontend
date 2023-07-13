@@ -61,4 +61,9 @@ export const userData = defineStore('user', {
       this.users = false
     },
   },
+  persist: {
+    storage: persistedState.cookiesWithOptions({
+      sameSite: 'strict',
+    }),
+  },
 })
