@@ -60,6 +60,7 @@ import AlertApp from '../components/AlertApp.vue'
 import LoadingApp from '../components/LoadingApp.vue'
 import NuxtLogo from '../components/NuxtLogo.vue'
 import { userData } from '~/store/userData'
+import moment from 'moment'
 
 export default {
   // eslint-disable-next-line vue/component-definition-name-casing, vue/multi-word-component-names
@@ -79,6 +80,23 @@ export default {
   },
 
   methods: {
+    async generateLoginToken() {
+      let token = ''
+      try {
+        const expiration = moment().add(1, 'month').toISOString()
+        const response = await fetch(
+          'http://localhost:8082/api/session/token',
+          {
+            method: 'POST',
+            body: new URLSearchParams(`expiration=${expiration}`),
+          },
+        )
+        if (response.ok) {
+          token = await response.text()
+          console.log(token)
+        }
+      } catch (e) {}
+    },
     async getDevices() {
       const credentials = btoa(this.inputEmail + ':' + this.inputPassword)
       const authorizationHeader = `Basic ${credentials}`
@@ -104,7 +122,7 @@ export default {
         body: formData,
       })
       const returnValue = await res.json()
-
+      // this.generateLoginToken()
       if (res.ok) {
         this.getDevices()
         this.msg = 'Login Successful'

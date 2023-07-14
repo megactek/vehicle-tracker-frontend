@@ -41,7 +41,7 @@ export default {
   name: 'dashboard',
   data() {
     return {
-      showDropDown: false,
+      showDropDown: true,
       authCred: userData().credentials,
       authenticated: !!userData().user,
       positions: sessionStore().positions,
@@ -51,6 +51,39 @@ export default {
     }
   },
   methods: {
+    async getDevices() {
+      try {
+        const res = await fetch(`http://localhost:8082/api/devices`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+        })
+        if (res.ok) {
+          const returnData = await res.json()
+          this.devices = returnData
+          userData().logDevices(returnValue)
+        } else {
+          this.error = true
+          if (res.status === 401) {
+            this.$router.push('/login')
+          } else {
+            this.errorMsg = 'cannot get devices'
+            setTimeout(() => {
+              this.error = false
+              this.errorMsg = ''
+            }, 3000)
+          }
+        }
+      } catch (e) {
+        this.errorMsg = e
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
+    },
     selectDevice(id) {
       deviceStore().selectedId = id
     },
@@ -105,6 +138,7 @@ export default {
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
+        this.getDevices()
         if (data.devices) {
           deviceStore().update(data.devices)
         }

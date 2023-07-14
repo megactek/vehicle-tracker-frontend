@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue'
-import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl'
+import {
+  MapboxMap,
+  MapboxMarker,
+  MapboxNavigationControl,
+} from '@studiometa/vue-mapbox-gl'
 import { Icon } from '@iconify/vue'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import useFilter from '~/utils/useFilter'
@@ -21,6 +25,8 @@ const { devices, positions, selectedId, filteredPositions } = defineProps([
 onMounted(() => {
   console.log(filteredPositions)
 })
+
+console.log(map)
 </script>
 
 <template>
@@ -32,6 +38,7 @@ onMounted(() => {
     :zoom="zoom"
     @mb-created="(mapInstance) => (map = mapInstance)"
   >
+    <MapboxNavigationControl position="top-right" />
     <MapboxMarker
       v-for="marker in filteredPositions"
       :key="marker.deviceId"
@@ -46,7 +53,12 @@ onMounted(() => {
             <p>{{ marker.totalDistance }}</p></span
           >
         </div>
-        <Icon icon="bxs:map" />
+        <Icon
+          icon="bxs:map"
+          :class="
+            marker.status === 'offline' ? 'offline-pointer' : 'online-pointer'
+          "
+        />
       </template>
     </MapboxMarker>
   </MapboxMap>
@@ -70,5 +82,13 @@ onMounted(() => {
   flex-direction: row;
   align-items: center;
   gap: 1rem;
+}
+
+.offline-pointer {
+  color: red;
+}
+
+.online-pointer {
+  color: initial;
 }
 </style>
