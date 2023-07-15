@@ -16,7 +16,7 @@
             <span>{{ device.name }}</span>
             <span
               :style="
-                device.status !== 'offline' ? 'color:green' : 'color:orangered'
+                device.status === 'online' ? 'color:green' : 'color:orangered'
               "
               >{{ device.status === 'online' ? 'online' : 'offline' }}</span
             >

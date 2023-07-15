@@ -74,8 +74,6 @@ export default {
   display: flex;
   box-shadow: 1px 2px 4px #888;
   width: 350px;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
   height: 60px;
   background-color: #fff;
 }
