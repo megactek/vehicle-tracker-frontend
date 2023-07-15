@@ -11,8 +11,8 @@
       </thead>
       <tbody>
         <tr v-for="item in users" :key="item.id">
-          <td>{{ item.name }}</td>
-          <td>{{ item.email }}</td>
+          <td class="wrap-content">{{ item.name }}</td>
+          <td class="wrap-content">{{ item.email }}</td>
           <td>{{ item.administrator }}</td>
           <td>{{ item.disabled }}</td>
         </tr>
@@ -60,5 +60,10 @@ tr {
 
 th {
   background-color: #f2f2f2;
+}
+
+.wrap-content {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 </style>

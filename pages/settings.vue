@@ -12,22 +12,29 @@
       @changeBody="changeBody($event)"
       v-show="screenSize <= 900"
       :isShowSideSmallBar="isShowSideSmallBar"
+      @closeSmalDeviceSideBar="closeSmalDeviceSideBar($event)"
     />
     <div class="body-container">
       <small-device-top-bar
-        currentTab="bodyDisplay"
+        :currentTab="bodyDisplay"
         v-show="screenSize < 551"
         @showSmallDeviceSidebar="showSmallDeviceSidebar($event)"
       />
-      <device-vue v-show="bodyDisplay === 'devices'" :devices="devices" />
+      <device-vue
+        v-show="bodyDisplay === 'devices'"
+        :devices="devices"
+        @click="closeSmalDeviceSideBar"
+      />
       <account-vue
         v-show="bodyDisplay === 'account'"
         @changeBody="changeBody($event)"
+        @click="closeSmalDeviceSideBar"
       />
 
       <add-device-vue
         v-show="bodyDisplay === 'add-device'"
         @changeBody="changeBody($event)"
+        @click="closeSmalDeviceSideBar"
       />
 
       <groups-vue
@@ -35,17 +42,20 @@
         @changeBody="changeBody($event)"
         :groups="groups"
         :getGroups="getGroups"
+        @click="closeSmalDeviceSideBar"
       />
 
       <add-group-vue
         v-show="bodyDisplay === 'add-group'"
         @changeBody="changeBody($event)"
+        @click="closeSmalDeviceSideBar"
       />
 
       <users-vue
         v-show="bodyDisplay === 'users'"
         @changeBody="changeBody($event)"
         :users="users"
+        @click="closeSmalDeviceSideBar"
       />
     </div>
   </div>
@@ -96,14 +106,19 @@ export default {
   },
   computed: {},
   methods: {
+    closeSmalDeviceSideBar() {
+      if (this.isShowSideSmallBar && this.screenSize < 551) {
+        this.isShowSideSmallBar = false
+      }
+    },
     updateScreenSize() {
       this.screenSize = window.innerWidth
     },
     changeBody(component) {
+      this.closeSmalDeviceSideBar()
       this.bodyDisplay = component
     },
     showSmallDeviceSidebar(value) {
-      console.log(value)
       this.isShowSideSmallBar = value
     },
     async getUsers() {
@@ -258,7 +273,7 @@ export default {
 
 @media (max-width: 550px) {
   .body-container {
-    width: 100%;
+    width: 100vw;
   }
 }
 </style>

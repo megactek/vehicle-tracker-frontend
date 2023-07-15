@@ -38,7 +38,7 @@ console.log(map)
     :zoom="zoom"
     @mb-created="(mapInstance) => (map = mapInstance)"
   >
-    <MapboxNavigationControl position="top-right" />
+    <MapboxNavigationControl position="bottom-right" />
     <MapboxMarker
       v-for="marker in filteredPositions"
       :key="marker.deviceId"

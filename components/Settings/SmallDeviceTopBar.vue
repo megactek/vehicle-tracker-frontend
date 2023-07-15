@@ -34,6 +34,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 1rem 1.4rem;
+  box-shadow: 2px 0 9px #999;
 }
 .header {
   display: flex;
@@ -60,5 +61,6 @@ export default {
 
 .header span {
   color: #000;
+  text-transform: capitalize;
 }
 </style>

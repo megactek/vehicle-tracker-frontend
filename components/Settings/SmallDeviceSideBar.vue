@@ -96,6 +96,7 @@ export default {
       this.$emit('changeBody', item)
     },
     backToDashboard() {
+      this.$emit('closeSmalDeviceSideBar', true)
       this.$router.push('/dashboard')
     },
   },
@@ -109,6 +110,7 @@ export default {
   width: 10%;
   border-right: 1px solid #e0e0e0;
   height: 100vh;
+  transition: all 2s ease-in;
 }
 
 .head-wrap {
@@ -169,6 +171,16 @@ export default {
     top: 0;
     bottom: 0;
     background: #222;
+  }
+  .settings-left-icon {
+    color: #fff;
+  }
+  .sidebar-icon {
+    font-size: 1.5rem;
+    color: #fff;
+  }
+  .selected-item {
+    background: #333 !important;
   }
 }
 </style>
