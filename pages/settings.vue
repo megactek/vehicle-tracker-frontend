@@ -7,8 +7,18 @@
   />
   <loading-app v-show="loading" />
   <div class="settings-container">
-    <side-bar-vue @changeBody="changeBody($event)" />
+    <side-bar-vue @changeBody="changeBody($event)" v-show="screenSize > 900" />
+    <small-device-side-bar
+      @changeBody="changeBody($event)"
+      v-show="screenSize <= 900"
+      :isShowSideSmallBar="isShowSideSmallBar"
+    />
     <div class="body-container">
+      <small-device-top-bar
+        currentTab="bodyDisplay"
+        v-show="screenSize < 551"
+        @showSmallDeviceSidebar="showSmallDeviceSidebar($event)"
+      />
       <device-vue v-show="bodyDisplay === 'devices'" :devices="devices" />
       <account-vue
         v-show="bodyDisplay === 'account'"
@@ -42,6 +52,8 @@
 </template>
 <script>
 import SideBarVue from '~/components/Settings/SideBar.vue'
+import SmallDeviceSideBar from '~/components/Settings/SmallDeviceSideBar.vue'
+import SmallDeviceTopBar from '~/components/Settings/SmallDeviceTopBar.vue'
 import DeviceVue from '~/components/Settings/Device.vue'
 import AccountVue from '~/components/Settings/Account.vue'
 import AddDeviceVue from '~/components/Settings/AddDevice.vue'
@@ -55,6 +67,8 @@ import { userData } from '~/store/userData'
 export default {
   components: {
     SideBarVue,
+    SmallDeviceSideBar,
+    SmallDeviceTopBar,
     DeviceVue,
     AccountVue,
     AlertApp,
@@ -76,11 +90,21 @@ export default {
       devices: [],
       groups: [],
       users: [],
+      screenSize: 0,
+      isShowSideSmallBar: false,
     }
   },
+  computed: {},
   methods: {
+    updateScreenSize() {
+      this.screenSize = window.innerWidth
+    },
     changeBody(component) {
       this.bodyDisplay = component
+    },
+    showSmallDeviceSidebar(value) {
+      console.log(value)
+      this.isShowSideSmallBar = value
     },
     async getUsers() {
       try {
@@ -189,6 +213,15 @@ export default {
       this.user = data
     }
     // useNuxt.$socketStore
+    this.updateScreenSize()
+    window.addEventListener('resize', () => {
+      this.updateScreenSize()
+    })
+  },
+  beforeMount() {
+    window.removeEventListener('resize', () => {
+      this.updateScreenSize()
+    })
   },
   provide() {
     return {
@@ -214,11 +247,18 @@ export default {
   width: 75%;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .settings-container {
   }
 
   .body-container {
+    width: 90%;
+  }
+}
+
+@media (max-width: 550px) {
+  .body-container {
+    width: 100%;
   }
 }
 </style>
