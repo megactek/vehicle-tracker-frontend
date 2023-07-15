@@ -8,16 +8,18 @@
       :error-alert="errorAlert"
     />
     <loading-app v-show="loading" />
-    <div class="left-cover">
+    <!-- <div class="left-cover">
       <nuxt-logo class="app-logo" />
-    </div>
+    </div> -->
     <div class="right-cover">
       <div class="right-cover-first-div">
-        <h2>Login</h2>
-        <p class="login-link">
-          New to Traka?
-          <nuxt-link to="/register" class="link-color">Register</nuxt-link>
-        </p>
+        <div class="header">
+          <h2>Login</h2>
+          <p class="login-link">
+            New to Traka?
+            <nuxt-link to="/register" class="link-color">Register</nuxt-link>
+          </p>
+        </div>
         <form @submit.prevent="onLogin">
           <div class="input-field">
             <input
@@ -60,6 +62,7 @@ import AlertApp from '../components/AlertApp.vue'
 import LoadingApp from '../components/LoadingApp.vue'
 import NuxtLogo from '../components/NuxtLogo.vue'
 import { userData } from '~/store/userData'
+import moment from 'moment'
 
 export default {
   // eslint-disable-next-line vue/component-definition-name-casing, vue/multi-word-component-names
@@ -79,6 +82,23 @@ export default {
   },
 
   methods: {
+    async generateLoginToken() {
+      let token = ''
+      try {
+        const expiration = moment().add(1, 'month').toISOString()
+        const response = await fetch(
+          'http://localhost:8082/api/session/token',
+          {
+            method: 'POST',
+            body: new URLSearchParams(`expiration=${expiration}`),
+          },
+        )
+        if (response.ok) {
+          token = await response.text()
+          console.log(token)
+        }
+      } catch (e) {}
+    },
     async getDevices() {
       const credentials = btoa(this.inputEmail + ':' + this.inputPassword)
       const authorizationHeader = `Basic ${credentials}`
@@ -104,7 +124,7 @@ export default {
         body: formData,
       })
       const returnValue = await res.json()
-
+      // this.generateLoginToken()
       if (res.ok) {
         this.getDevices()
         this.msg = 'Login Successful'
@@ -141,33 +161,36 @@ export default {
 <style scoped>
 .singup-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
 }
 
-.left-cover {
-  width: 25%;
-  background: var(--color-bg-primary);
-  height: 100vh;
+.right-cover {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.right-cover {
-  width: 75%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 300px;
-}
-
 .right-cover-first-div {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 420px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 300px;
 }
 
 .right-cover-first-div h2 {
@@ -224,7 +247,7 @@ button {
   cursor: pointer;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   singup-container {
     height: 100vh;
     width: 100vw;

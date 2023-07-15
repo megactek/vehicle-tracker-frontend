@@ -22,9 +22,11 @@
     "@nuxtjs/composition-api": "^0.33.1",
     "@pinia/nuxt": "^0.4.11",
     "@studiometa/vue-mapbox-gl": "^2.1.1",
+    "@turf/circle": "^6.5.0",
     "animate.css": "^4.1.1",
     "ant-design-vue": "^3.2.20",
     "mapbox-gl": "^2.15.0",
+    "moment": "^2.29.4",
     "pinia": "^2.1.4",
     "ws": "^8.13.0"
   }

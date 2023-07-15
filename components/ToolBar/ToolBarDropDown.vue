@@ -4,7 +4,7 @@
       <div class="drop-dwon-items">
         <div
           class="drop-down-item"
-          v-for="device in filteredDevices"
+          v-for="device in filteredPositions"
           :key="device.id"
           @click="selectDevice(device.id)"
           :style="
@@ -14,11 +14,12 @@
           <Icon icon="bxs:map" class="icon" />
           <div class="div">
             <span>{{ device.name }}</span>
-            <span :style="!device.disabled ? 'color:green' : 'color:#444'">{{
-              device.disabled
-                ? `last active: ${new Date(device.lastActive).toLocaleString()}`
-                : 'online'
-            }}</span>
+            <span
+              :style="
+                device.status !== 'offline' ? 'color:green' : 'color:orangered'
+              "
+              >{{ device.status === 'online' ? 'online' : 'offline' }}</span
+            >
           </div>
         </div>
       </div>
@@ -28,16 +29,16 @@
 <script>
 import { Icon } from '@iconify/vue'
 import { userData } from '~/store/userData'
+import { sessionStore } from '~/store/sessions'
 export default {
   components: {
     Icon,
   },
-  props: ['positions', 'devices'],
   data() {
     return {
       initialDevices: userData().getDevices,
-      filteredDevices: [],
       selectedId: null,
+      filteredPositions: sessionStore().filteredPositions,
     }
   },
   methods: {

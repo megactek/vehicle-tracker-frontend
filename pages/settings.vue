@@ -7,17 +7,34 @@
   />
   <loading-app v-show="loading" />
   <div class="settings-container">
-    <side-bar-vue @changeBody="changeBody($event)" />
+    <side-bar-vue @changeBody="changeBody($event)" v-show="screenSize > 900" />
+    <small-device-side-bar
+      @changeBody="changeBody($event)"
+      v-show="screenSize <= 900"
+      :isShowSideSmallBar="isShowSideSmallBar"
+      @closeSmalDeviceSideBar="closeSmalDeviceSideBar($event)"
+    />
     <div class="body-container">
-      <device-vue v-show="bodyDisplay === 'devices'" :devices="devices" />
+      <small-device-top-bar
+        :currentTab="bodyDisplay"
+        v-show="screenSize < 551"
+        @showSmallDeviceSidebar="showSmallDeviceSidebar($event)"
+      />
+      <device-vue
+        v-show="bodyDisplay === 'devices'"
+        :devices="devices"
+        @click="closeSmalDeviceSideBar"
+      />
       <account-vue
         v-show="bodyDisplay === 'account'"
         @changeBody="changeBody($event)"
+        @click="closeSmalDeviceSideBar"
       />
 
       <add-device-vue
         v-show="bodyDisplay === 'add-device'"
         @changeBody="changeBody($event)"
+        @click="closeSmalDeviceSideBar"
       />
 
       <groups-vue
@@ -25,23 +42,28 @@
         @changeBody="changeBody($event)"
         :groups="groups"
         :getGroups="getGroups"
+        @click="closeSmalDeviceSideBar"
       />
 
       <add-group-vue
         v-show="bodyDisplay === 'add-group'"
         @changeBody="changeBody($event)"
+        @click="closeSmalDeviceSideBar"
       />
 
       <users-vue
         v-show="bodyDisplay === 'users'"
         @changeBody="changeBody($event)"
         :users="users"
+        @click="closeSmalDeviceSideBar"
       />
     </div>
   </div>
 </template>
 <script>
 import SideBarVue from '~/components/Settings/SideBar.vue'
+import SmallDeviceSideBar from '~/components/Settings/SmallDeviceSideBar.vue'
+import SmallDeviceTopBar from '~/components/Settings/SmallDeviceTopBar.vue'
 import DeviceVue from '~/components/Settings/Device.vue'
 import AccountVue from '~/components/Settings/Account.vue'
 import AddDeviceVue from '~/components/Settings/AddDevice.vue'
@@ -55,6 +77,8 @@ import { userData } from '~/store/userData'
 export default {
   components: {
     SideBarVue,
+    SmallDeviceSideBar,
+    SmallDeviceTopBar,
     DeviceVue,
     AccountVue,
     AlertApp,
@@ -76,11 +100,26 @@ export default {
       devices: [],
       groups: [],
       users: [],
+      screenSize: 0,
+      isShowSideSmallBar: false,
     }
   },
+  computed: {},
   methods: {
+    closeSmalDeviceSideBar() {
+      if (this.isShowSideSmallBar && this.screenSize < 551) {
+        this.isShowSideSmallBar = false
+      }
+    },
+    updateScreenSize() {
+      this.screenSize = window.innerWidth
+    },
     changeBody(component) {
+      this.closeSmalDeviceSideBar()
       this.bodyDisplay = component
+    },
+    showSmallDeviceSidebar(value) {
+      this.isShowSideSmallBar = value
     },
     async getUsers() {
       try {
@@ -189,6 +228,15 @@ export default {
       this.user = data
     }
     // useNuxt.$socketStore
+    this.updateScreenSize()
+    window.addEventListener('resize', () => {
+      this.updateScreenSize()
+    })
+  },
+  beforeMount() {
+    window.removeEventListener('resize', () => {
+      this.updateScreenSize()
+    })
   },
   provide() {
     return {
@@ -214,11 +262,18 @@ export default {
   width: 75%;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
   .settings-container {
   }
 
   .body-container {
+    width: 90%;
+  }
+}
+
+@media (max-width: 550px) {
+  .body-container {
+    width: 100vw;
   }
 }
 </style>

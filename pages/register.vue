@@ -8,16 +8,18 @@
       :error-alert="errorAlert"
     />
     <loading-app v-show="loading" />
-    <div class="left-cover">
+    <!-- <div class="left-cover">
       <nuxt-logo class="app-logo" />
-    </div>
+    </div> -->
     <div class="right-cover">
       <div class="right-cover-first-div">
-        <h2>Register</h2>
-        <p class="login-link">
-          Already have an account?
-          <nuxt-link to="/login" class="link-color">Log In</nuxt-link>
-        </p>
+        <div class="header">
+          <h2>Register</h2>
+          <p class="login-link">
+            Already have an account?
+            <nuxt-link to="/login" class="link-color">Log In</nuxt-link>
+          </p>
+        </div>
         <form @submit.prevent="onRegister">
           <div class="input-field">
             <input
@@ -167,9 +169,18 @@ export default {
 .right-cover-first-div {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 420px;
 }
 
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 300px;
+}
 .right-cover-first-div h2 {
   font-size: 1.3rem;
   color: black;
@@ -214,7 +225,7 @@ button {
   cursor: pointer;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   singup-container {
     height: 100vh;
     width: 100vw;

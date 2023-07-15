@@ -211,4 +211,27 @@ form {
   outline: none !important;
   border: 2px solid var(--color-bg-primary) !important;
 }
+
+@media (max-width: 550px) {
+  form {
+    margin-top: 2rem;
+    gap: 0.2rem;
+  }
+  .account-container {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .first-flex {
+    margin-bottom: 2rem;
+  }
+
+  .el-btn button {
+    width: 100px;
+    border-radius: 5px;
+    font-weight: 600;
+  }
+}
 </style>

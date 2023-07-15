@@ -1,9 +1,13 @@
 import { deviceStore } from '~/store/device'
 import { sessionStore } from '~/store/sessions'
+import { userData } from '~/store/userData'
 
-export default () => {
-  const devices = deviceStore().items
-  const positions = sessionStore().positions
+export default (devices: any, positions: any) => {
+  // let devices = deviceStore().items
+  // if (!devices) {
+  //   devices = userData().devices
+  // }
+  // const positions = sessionStore().positions
   const mergedData = Object.keys(positions)
     .map((positionKey: any) => {
       if (positions[positionKey]) {
