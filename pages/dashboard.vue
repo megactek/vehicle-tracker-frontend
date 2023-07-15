@@ -10,7 +10,6 @@
         v-show="showDropDown"
         :positions="positions"
         :devices="devices"
-        :filteredPositions="filteredPositions"
         @selectDevice="selectDevice($event)"
       />
     </div>
@@ -19,7 +18,6 @@
         :positions="positions"
         :devices="devices"
         :selectedId="selectedDeviceId"
-        :filteredPositions="filteredPositions"
       />
     </div>
   </div>
@@ -47,7 +45,6 @@ export default {
       positions: sessionStore().positions,
       devices: deviceStore().items,
       selectedDeviceId: deviceStore().selectedId,
-      filteredPositions: [],
     }
   },
   methods: {
@@ -123,6 +120,16 @@ export default {
               },
             )
             if (positionResponse.ok) {
+              console.log("it actually didn't work")
+              let presentDevices = deviceStore().items
+              if (!presentDevices) {
+                presentDevices = userData().devices
+              }
+              const filteredPositions = useFilter(
+                presentDevices,
+                await positionResponse.json(),
+              )
+              sessionStore().updateFilteredPositions(filteredPositions)
               sessionStore().updatePositions(await positionResponse.json())
             }
             if (
@@ -158,7 +165,6 @@ export default {
     const socket = sessionStore().socket
 
     this.connectSocket()
-    this.filteredPositions = useFilter()
     console.log(this.authenticated, devices, sessions, socket)
   },
   watch: {

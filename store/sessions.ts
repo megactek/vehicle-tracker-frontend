@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import { userData } from './userData'
+import { deviceStore } from './device'
+import useFilter from '../utils/useFilter'
 
 export const sessionStore = defineStore('sessions', {
   state: () => ({
@@ -7,6 +9,7 @@ export const sessionStore = defineStore('sessions', {
     socket: null,
     positions: {},
     history: {},
+    filteredPositions: null,
   }),
   getters: {
     getServer: (state) => state.server,
@@ -15,6 +18,9 @@ export const sessionStore = defineStore('sessions', {
     getHistory: (state) => state.history,
   },
   actions: {
+    updateFilteredPositions(payload: any) {
+      this.$state.filteredPositions = payload
+    },
     updateServer(payload: any) {
       this.$patch({ server: payload })
     },
@@ -49,6 +55,16 @@ export const sessionStore = defineStore('sessions', {
               [position.longitude, position.latitude],
             ]
           }
+          let presentDevices = deviceStore().items
+          if (!presentDevices) {
+            presentDevices = userData().devices
+          }
+          const filteredPositions = useFilter(
+            presentDevices,
+            this.$state.positions,
+          )
+          //@ts-expect-error
+          this.$state.filteredPositions = filteredPositions
         } else {
           this.$state.history = {}
         }

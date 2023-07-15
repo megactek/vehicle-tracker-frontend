@@ -29,15 +29,16 @@
 <script>
 import { Icon } from '@iconify/vue'
 import { userData } from '~/store/userData'
+import { sessionStore } from '~/store/sessions'
 export default {
   components: {
     Icon,
   },
-  props: ['positions', 'devices', 'filteredPositions'],
   data() {
     return {
       initialDevices: userData().getDevices,
       selectedId: null,
+      filteredPositions: sessionStore().filteredPositions,
     }
   },
   methods: {
