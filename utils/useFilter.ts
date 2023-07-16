@@ -3,6 +3,7 @@ import { sessionStore } from '~/store/sessions'
 import { userData } from '~/store/userData'
 
 export default (devices: any, positions: any) => {
+  console.log(devices, positions)
   // let devices = deviceStore().items
   // if (!devices) {
   //   devices = userData().devices
@@ -13,8 +14,12 @@ export default (devices: any, positions: any) => {
       if (positions[positionKey]) {
         const position = positions[positionKey]
         let device: any
+
         if (devices[position.deviceId]) {
           device = devices[position.deviceId]
+        } else if (devices.length) {
+          //@ts-expect-error
+          device = deviceStore().items[position.deviceId]
         }
 
         if (device) {
@@ -29,5 +34,6 @@ export default (devices: any, positions: any) => {
       return null
     })
     .filter((data) => data !== null)
+  console.log(mergedData)
   return mergedData
 }

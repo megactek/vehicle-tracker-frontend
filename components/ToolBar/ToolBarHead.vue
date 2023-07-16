@@ -1,8 +1,8 @@
 <template>
   <!-- bx:map -->
-  <div class="container">
+  <div class="tool-container">
     <div class="tools">
-      <div class="tool tool-pri">
+      <div class="tool tool-pri pri-first">
         <Icon
           icon="mdi:hamburger-menu"
           v-show="currentMenu === 'menu'"
@@ -14,20 +14,9 @@
           @click="setCurrentMenuToMenu"
         />
       </div>
-
-      <div class="tool">
-        <input
-          type="text"
-          name="search"
-          id="search"
-          placeholder="Search Devices"
-          @focus="setFocus"
-          @mouseleave="reverseFocus"
-          :class="isFocused ? 'search-focus' : ''"
-          v-model="searchDeviceParam"
-        />
+      <div class="tool tool-pri">
+        <Icon icon="material-symbols:route-outline" />
       </div>
-
       <div class="tool tool-pri tool-pri-last">
         <Icon icon="clarity:plus-line" @click="displayPanel" />
       </div>
@@ -40,20 +29,12 @@ export default {
   data() {
     return {
       currentMenu: 'map',
-      searchDeviceParam: '',
-      isFocused: false,
     }
   },
   components: {
     Icon,
   },
   methods: {
-    setFocus() {
-      this.isFocused = true
-    },
-    reverseFocus() {
-      this.isFocused = false
-    },
     setCurrentMenuToMap() {
       this.currentMenu = 'map'
       this.$emit('showDropDown')
@@ -69,58 +50,49 @@ export default {
 }
 </script>
 <style scoped>
-.container {
+.tool-container {
   padding: 1rem;
   display: flex;
-  box-shadow: 1px 2px 4px #888;
+  box-shadow: 1px 2px 3px #999;
   width: 350px;
   height: 60px;
   background-color: #fff;
+  flex-direction: column;
 }
 .tools {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-evenly;
-  gap: 1rem;
+  justify-content: space-between;
 }
 
 .tool-pri {
   cursor: pointer;
   font-size: 1.3rem;
-  color: #757474;
+  color: #111;
 }
 
-#search {
-  border: 1px solid #ddd;
-  height: 40px;
+.tool {
+  padding: 0.2rem 0.5rem;
+  transition: all 0.4s ease-out;
+}
+
+.tool:hover {
   background: #f4f4f4;
-  border-radius: 5px;
-  padding-left: 15px;
-  color: #444;
-  width: 95%;
+  border-radius: 20px;
 }
 
-#search:hover {
-  border: 1px solid #777;
-}
-
-#search:focus {
-  outline: none;
-}
-
-.search-focus {
-  outline: none !important;
-  border: 1px solid var(--color-bg-primary) !important;
+.pri-first {
+  color: var(--color-bg-primary);
 }
 
 .tool-pri-last {
   font-weight: 900;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 @media (max-width: 900px) {
-  .container {
+  .tool-container {
     width: 100%;
     height: 70px;
     padding: 1rem;
