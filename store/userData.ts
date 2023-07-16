@@ -54,6 +54,7 @@ export const userData = defineStore('user', {
       localStorage.removeItem('user')
       localStorage.removeItem('users')
       localStorage.removeItem('devices')
+      localStorage.removeItem('groups')
       localStorage.removeItem('x-auth-cred'), (this.isLoggedIn = false)
       this.credentials = false
       this.user = {}

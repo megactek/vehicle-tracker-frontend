@@ -41,7 +41,7 @@ export const sessionStore = defineStore('sessions', {
       payload.forEach((position: any) => {
         //@ts-expect-error
         this.$state.positions[position.deviceId] = position
-        if (liveRoutes !== 'none') {
+        if (liveRoutes === 'none') {
           //@ts-expect-error
           const route = this.$state.history[position.deviceId] || []
           const last = route.at(-1)
@@ -58,6 +58,8 @@ export const sessionStore = defineStore('sessions', {
           let presentDevices = deviceStore().items
           if (!presentDevices) {
             presentDevices = userData().devices
+            //@ts-expect-error
+            presentDevices.status = 'offline'
           }
           const filteredPositions = useFilter(
             presentDevices,

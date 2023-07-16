@@ -11,6 +11,7 @@
         :positions="positions"
         :devices="devices"
         @selectDevice="selectDevice($event)"
+        @changePanel="changePanel($event)"
       />
     </div>
     <div class="map-container">
@@ -81,6 +82,38 @@ export default {
         }, 3000)
       }
     },
+    async getPositions() {
+      try {
+        const res = await fetch(`http://localhost:8082/api/positions`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+        })
+        if (res.ok) {
+          const returnData = await res.json()
+          sessionStore().updatePositions(returnData)
+        } else {
+          this.error = true
+          if (res.status === 401) {
+            this.$router.push('/login')
+          } else {
+            this.errorMsg = 'cannot get positions'
+            setTimeout(() => {
+              this.error = false
+              this.errorMsg = ''
+            }, 3000)
+          }
+        }
+      } catch (e) {
+        this.errorMsg = e
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
+    },
     selectDevice(id) {
       deviceStore().selectedId = id
     },
@@ -120,7 +153,6 @@ export default {
               },
             )
             if (positionResponse.ok) {
-              console.log("it actually didn't work")
               let presentDevices = deviceStore().items
               if (!presentDevices) {
                 presentDevices = userData().devices
@@ -129,8 +161,8 @@ export default {
                 presentDevices,
                 await positionResponse.json(),
               )
-              sessionStore().updateFilteredPositions(filteredPositions)
               sessionStore().updatePositions(await positionResponse.json())
+              sessionStore().updateFilteredPositions(filteredPositions)
             }
             if (
               deviceResponse.status === 401 ||
@@ -146,26 +178,45 @@ export default {
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data)
         this.getDevices()
-        if (data.devices) {
-          deviceStore().update(data.devices)
-        }
-        if (data.positions) {
-          sessionStore().updatePositions(data.positions)
-        }
+        this.getPositions()
+        console.log(data)
+        if (data.devices && data.positions) {
+          const filteredPositions = useFilter(data.devices, data.positions)
+          sessionStore().updateFilteredPositions(filteredPositions)
+        } else {
+          if (data.devices) {
+            deviceStore().update(data.devices)
+            const currentPositions = sessionStore().positions
+            const filteredPositions = useFilter(
+              deviceStore().items,
+              currentPositions,
+            )
+            sessionStore().updateFilteredPositions(filteredPositions)
+          }
+          if (data.positions) {
+            sessionStore().updatePositions(data.positions)
+            if (!data.devices) {
+              let presentDevices = deviceStore().items
+              if (!presentDevices) {
+                presentDevices = userData().devices
+              }
+              const filteredPositions = useFilter(
+                presentDevices,
+                data.positions,
+              )
+              sessionStore().updateFilteredPositions(filteredPositions)
+            }
+          }
 
-        if (data.events) {
-          // add to events store in the future when feature is added
+          if (data.events) {
+            // add to events store in the future when feature is added
+          }
         }
       }
     },
   },
   mounted() {
-    const devices = deviceStore().items
-    const sessions = sessionStore().positions
-    const socket = sessionStore().socket
-
     this.connectSocket()
-    console.log(this.authenticated, devices, sessions, socket)
   },
   watch: {
     async authenticated() {

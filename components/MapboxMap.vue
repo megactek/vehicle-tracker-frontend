@@ -8,21 +8,43 @@ import {
 import { Icon } from '@iconify/vue'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { sessionStore } from '~/store/sessions'
+import { deviceStore } from '~/store/device'
 const runtimeConfig = useRuntimeConfig()
 
 const mapBoxToken = runtimeConfig.public.mapBoxKey
 const mapCenter = ref([0, 3.5])
 const zoom = 1
-const map = null
+const map = ref(null)
+// const { devices, positions, selectedId, filteredPositions } = defineProps([
+//   'positions',
+//   'devices',
+//   'selectedId',
+//   'filteredPositions',
+// ])
+const newCenter = ref([0, 0])
 
-const { devices, positions, selectedId, filteredPositions } = defineProps([
-  'positions',
-  'devices',
-  'selectedId',
-  'filteredPositions',
-])
+const iniialSelectedtId = computed(() => deviceStore().selectedId)
 
-console.log(sessionStore().filteredPositions)
+watch(iniialSelectedtId, () => {
+  sessionStore().filteredPositions.map((positions) => {
+    if (deviceStore().selectedId) {
+      if (positions.deviceId === deviceStore().selectedId) {
+        newCenter.value = positions.position
+      }
+    } else {
+      // newCenter.value = sessionStore().filteredPositions[0].position
+    }
+  })
+  if (map.value) {
+    map.value.setCenter(newCenter.value)
+    map.value.zoomTo(15, {
+      duration: 2000,
+      // offset: [100, 50]
+    })
+  }
+})
+
+console.log(map)
 </script>
 
 <template>
@@ -32,9 +54,10 @@ console.log(sessionStore().filteredPositions)
     map-style="mapbox://styles/mapbox/streets-v11"
     :center="mapCenter"
     :zoom="zoom"
+    :logoPosition="'bottom-right'"
     @mb-created="(mapInstance) => (map = mapInstance)"
   >
-    <MapboxNavigationControl position="bottom-right" />
+    <MapboxNavigationControl position="top-right" />
     <MapboxMarker
       v-for="marker in sessionStore().filteredPositions"
       :key="marker.deviceId"
@@ -43,18 +66,41 @@ console.log(sessionStore().filteredPositions)
     >
       <template v-slot:popup>
         <div class="content">
-          <p class="name">{{ marker.name }}</p>
-          <span
-            >Total Distance:
-            <p>{{ marker.totalDistance }}</p></span
-          >
+          <div class="name-div">
+            <span>{{ marker.name }}</span>
+          </div>
+          <div class="next-div">
+            <div>
+              <strong>Status: </strong>
+              <small
+                :style="
+                  marker.status === 'online'
+                    ? 'color:green!important;'
+                    : 'color:grey;'
+                "
+                >{{ marker.status }}</small
+              >
+            </div>
+            <div>
+              <strong>BatteryLevel: </strong>
+              <small>{{ marker.attributes.batteryLevel }}%</small>
+            </div>
+            <div>
+              <strong>Total Distance: </strong>
+              <small>{{ marker.attributes.totalDistance }}</small>
+            </div>
+            <div>
+              <strong>Moving: </strong>
+              <small>{{ marker.attributes.motion }}</small>
+            </div>
+          </div>
         </div>
-        <Icon
+        <!-- <Icon
           icon="bxs:map"
           :class="
             marker.status === 'offline' ? 'offline-pointer' : 'online-pointer'
           "
-        />
+        /> -->
       </template>
     </MapboxMarker>
   </MapboxMap>
@@ -62,29 +108,41 @@ console.log(sessionStore().filteredPositions)
 <style scoped>
 .content {
   padding: 1rem;
-  width: 300px;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
-}
-.content .name {
-  text-align: left;
-  color: #888;
-  font-size: 0.95rem;
-  padding-bottom: 1rem;
+  gap: 0.5rem;
 }
 
-.content span {
+.name-div {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
+  width: 100%;
 }
 
-.offline-pointer {
-  color: red;
+.name-div span {
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: left;
 }
 
-.online-pointer {
-  color: initial;
+.next-div {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.next-div div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.next-div small {
+  font-size: 0.7rem;
 }
 </style>

@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import { sessionStore } from './sessions'
+import useFilter from '~/utils/useFilter'
 
 export const deviceStore = defineStore('devices', {
   state: () => ({
@@ -20,6 +22,8 @@ export const deviceStore = defineStore('devices', {
     update(payload: Array<any>) {
       //@ts-expect-error
       payload.forEach((item: any) => (this.$state.items[item.id] = item))
+      const filteredPositions = useFilter(this.items, sessionStore().positions)
+      sessionStore().updateFilteredPositions(filteredPositions)
       console.log(this.items)
     },
     select(payload: any) {
