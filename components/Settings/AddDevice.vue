@@ -68,8 +68,10 @@
   </div>
 </template>
 <script>
-import { userData } from '~/store/userData'
 import { Icon } from '@iconify/vue'
+import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
+
 export default {
   data() {
     return {
@@ -96,6 +98,7 @@ export default {
         category: '',
         attributes: {},
       },
+      api: runtimeConfig.public.api,
     }
   },
   components: {
@@ -133,7 +136,7 @@ export default {
         const { name, uniqueId } = this.getValues()
         this.uploadData.name = name
         this.uploadData.uniqueId = uniqueId
-        const res = await fetch('http://localhost:8082/api/devices', {
+        const res = await fetch(`${this.api}/devices`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -35,6 +35,7 @@
 </template>
 <script>
 import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
 
 export default {
   props: ['devices', 'bodyDisplay'],
@@ -44,12 +45,13 @@ export default {
       authCred: userData().credentials,
       hasBeenDeleted: null,
       mainDevices: [],
+      api: runtimeConfig.public.api,
     }
   },
   methods: {
     async getDevices() {
       try {
-        const res = await fetch(`http://localhost:8082/api/devices`, {
+        const res = await fetch(`${this.api}/devices`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -81,7 +83,7 @@ export default {
       }
     },
     async deleteDevice(id) {
-      await fetch(`http://localhost:8082/api/devices/${id}`, {
+      await fetch(`${this.api}/devices/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: this.authCred,

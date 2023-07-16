@@ -47,6 +47,7 @@
 </template>
 <script>
 import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
 
 export default {
   inject: ['user'],
@@ -55,6 +56,7 @@ export default {
       inputPassword: '',
       error: false,
       errorMsg: '',
+      api: runtimeConfig.public.api,
     }
   },
   methods: {
@@ -70,17 +72,14 @@ export default {
         this.inputPassword.length !== 0
       ) {
         try {
-          const res = await fetch(
-            `http://localhost:8082/api/users/${this.user.id}`,
-            {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: authorizationHeader,
-              },
-              body: JSON.stringify(this.user),
+          const res = await fetch(`${this.api}/users/${this.user.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: authorizationHeader,
             },
-          )
+            body: JSON.stringify(this.user),
+          })
           if (res.ok) {
             const returnData = await res.json()
             userData().logUser(returnData, true)

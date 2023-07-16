@@ -32,6 +32,7 @@ import { userData } from '~/store/userData'
 import { deviceStore } from '~/store/device'
 import { sessionStore } from '~/store/sessions'
 import useFilter from '~/utils/useFilter'
+const runtimeConfig = useRuntimeConfig()
 
 const socketRef = useState()
 
@@ -47,12 +48,13 @@ export default {
       positions: sessionStore().positions,
       devices: deviceStore().items,
       selectedDeviceId: deviceStore().selectedId,
+      api: runtimeConfig.public.api,
     }
   },
   methods: {
     async getDevices() {
       try {
-        const res = await fetch(`http://localhost:8082/api/devices`, {
+        const res = await fetch(`${this.api}/devices`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +87,7 @@ export default {
     },
     async getPositions() {
       try {
-        const res = await fetch(`http://localhost:8082/api/positions`, {
+        const res = await fetch(`${this.api}/positions`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -125,7 +127,7 @@ export default {
       this.showDropDown = !this.showDropDown
     },
     connectSocket() {
-      const host = 'ws://localhost:8082/api/socket'
+      const host = runtimeConfig.public.wsApi
       const socket = new WebSocket(host)
       socketRef.current = socket
 
@@ -138,21 +140,15 @@ export default {
         sessionStore().updateSocket(false)
         if (event.code !== 4000) {
           try {
-            const deviceResponse = await fetch(
-              'http://localhost:8082/api/devices',
-              {
-                headers: { Authorization: this.authCred },
-              },
-            )
+            const deviceResponse = await fetch(`${this.api}/devices`, {
+              headers: { Authorization: this.authCred },
+            })
             if (deviceResponse.ok) {
               deviceStore().update(await deviceResponse.json())
             }
-            const positionResponse = await fetch(
-              'http://localhost:8082/api/positions',
-              {
-                headers: { Authorization: this.authCred },
-              },
-            )
+            const positionResponse = await fetch(`${this.api}/positions`, {
+              headers: { Authorization: this.authCred },
+            })
             if (positionResponse.ok) {
               let presentDevices = deviceStore().items
               if (!presentDevices) {
@@ -221,7 +217,7 @@ export default {
   watch: {
     async authenticated() {
       if (this.authenticated) {
-        const response = await fetch('http://localhost:8082/api/devices', {
+        const response = await fetch(`${this.api}/devices`, {
           headers: { Authorization: this.authCred },
         })
         if (response.ok) {

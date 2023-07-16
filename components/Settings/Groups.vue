@@ -43,6 +43,8 @@
 import { userData } from '~/store/userData'
 import EditGroupModal from '../Modal/EditGroupModal.vue'
 
+const runtimeConfig = useRuntimeConfig()
+
 export default {
   props: ['bodyDisplay'],
   data() {
@@ -57,6 +59,7 @@ export default {
       editGroupName: '',
       editId: 0,
       isDeleted: false,
+      api: runtimeConfig.public.api,
     }
   },
   components: {
@@ -65,7 +68,7 @@ export default {
   methods: {
     async getGroups() {
       try {
-        const res = await fetch(`http://localhost:8082/api/groups`, {
+        const res = await fetch(`${this.api}/groups`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -112,7 +115,7 @@ export default {
         }, 3000)
       } else {
         try {
-          await fetch(`http://localhost:8082/api/groups/${id}`, {
+          await fetch(`${this.api}/groups/${id}`, {
             method: 'DELETE',
             headers: {
               Authorization: this.authCred,

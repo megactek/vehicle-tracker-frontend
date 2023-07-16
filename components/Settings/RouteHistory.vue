@@ -37,6 +37,8 @@
 </template>
 <script>
 import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
+
 export default {
   data() {
     return {
@@ -44,12 +46,13 @@ export default {
       authCred: userData().credentials,
       error: false,
       errorMsg: '',
+      api: runtimeConfig.public.api,
     }
   },
   methods: {
     async getHistory() {
       try {
-        const res = await fetch(`http://localhost:8082/api/reports`, {
+        const res = await fetch(`${this.api}/reports`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

@@ -83,6 +83,7 @@ import UsersVue from '~/components/Settings/Users.vue'
 import AlertApp from '../components/AlertApp.vue'
 import LoadingApp from '../components/LoadingApp.vue'
 import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
 
 export default {
   components: {
@@ -114,6 +115,7 @@ export default {
       users: [],
       screenSize: 0,
       isShowSideSmallBar: false,
+      api: runtimeConfig.public.api,
     }
   },
   computed: {},
@@ -135,7 +137,7 @@ export default {
     },
     async getUsers() {
       try {
-        const res = await fetch(`http://localhost:8082/api/users`, {
+        const res = await fetch(`${this.api}/users`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -165,7 +167,7 @@ export default {
     },
     async getGroups() {
       try {
-        const res = await fetch(`http://localhost:8082/api/groups`, {
+        const res = await fetch(`${this.api}/groups`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -194,7 +196,7 @@ export default {
     },
     async getDevices() {
       try {
-        const res = await fetch(`http://localhost:8082/api/devices`, {
+        const res = await fetch(`${this.api}/devices`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

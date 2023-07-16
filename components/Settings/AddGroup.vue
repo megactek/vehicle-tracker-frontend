@@ -27,6 +27,7 @@
 </template>
 <script>
 import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
 
 export default {
   data() {
@@ -36,6 +37,7 @@ export default {
       authCred: userData().credentials,
       error: false,
       errorMsg: '',
+      api: runtimeConfig.public.api,
     }
   },
   methods: {
@@ -54,7 +56,7 @@ export default {
         }, 3000)
       } else {
         try {
-          const res = await fetch(`http://localhost:8082/api/groups`, {
+          const res = await fetch(`${this.api}/groups`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

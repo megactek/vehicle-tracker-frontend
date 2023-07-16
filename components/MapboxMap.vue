@@ -11,6 +11,7 @@ import { sessionStore } from '~/store/sessions'
 import { deviceStore } from '~/store/device'
 const runtimeConfig = useRuntimeConfig()
 
+const api = runtimeConfig.public.api
 const mapBoxToken = runtimeConfig.public.mapBoxKey
 const mapCenter = ref([0, 3.5])
 const zoom = 1
@@ -67,7 +68,7 @@ console.log(map)
       <template v-slot:popup>
         <div class="content">
           <div class="name-div">
-            <span>{{ marker.name ||  marker[0].name  }}</span>
+            <span>{{ marker.name || marker[0].name }}</span>
           </div>
           <div class="next-div">
             <div>

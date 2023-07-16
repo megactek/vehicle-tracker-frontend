@@ -63,6 +63,7 @@ import LoadingApp from '../components/LoadingApp.vue'
 import NuxtLogo from '../components/NuxtLogo.vue'
 import { userData } from '~/store/userData'
 import moment from 'moment'
+const runtimeConfig = useRuntimeConfig()
 
 export default {
   // eslint-disable-next-line vue/component-definition-name-casing, vue/multi-word-component-names
@@ -78,6 +79,7 @@ export default {
       successAlert: false,
       errorAlert: false,
       isAllowed: false,
+      api: runtimeConfig.public.api,
     }
   },
 
@@ -86,23 +88,19 @@ export default {
       let token = ''
       try {
         const expiration = moment().add(1, 'month').toISOString()
-        const response = await fetch(
-          'http://localhost:8082/api/session/token',
-          {
-            method: 'POST',
-            body: new URLSearchParams(`expiration=${expiration}`),
-          },
-        )
+        const response = await fetch(`${this.api}/session/token`, {
+          method: 'GET',
+          body: new URLSearchParams(`expiration=${expiration}`),
+        })
         if (response.ok) {
           token = await response.text()
-          console.log(token)
         }
       } catch (e) {}
     },
     async getDevices() {
       const credentials = btoa(this.inputEmail + ':' + this.inputPassword)
       const authorizationHeader = `Basic ${credentials}`
-      const res = await fetch(`http://localhost:8082/api/devices`, {
+      const res = await fetch(`${this.api}/devices`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +108,6 @@ export default {
         },
       })
       const returnValue = await res.json()
-      console.log(returnValue)
       userData().logDevices(returnValue)
       userData().logCredential(authorizationHeader)
     },
@@ -118,7 +115,7 @@ export default {
       const formData = new URLSearchParams()
       formData.append('email', this.inputEmail)
       formData.append('password', this.inputPassword)
-      const res = await fetch('http://localhost:8082/api/session', {
+      const res = await fetch(`${this.api}/session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData,

@@ -11,6 +11,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       mapBoxKey: process.env.NUXT_MAPBOX_API_KEY,
+      api: process.env.API,
+      wsApi: process.env.WSAPI,
     },
   },
   components: true,
