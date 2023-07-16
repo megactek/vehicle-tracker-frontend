@@ -8,6 +8,7 @@
       />
       <tool-bar-drop-down
         v-show="showDropDown"
+        :showDropDown="showDropDown"
         :positions="positions"
         :devices="devices"
         @selectDevice="selectDevice($event)"
@@ -256,8 +257,7 @@ export default {
 
 .toolbar-container {
   padding: 1rem;
-  height: 100vh;
-  z-index: 1;
+  height: 96vh;
   left: 0;
   top: 0;
   position: absolute;

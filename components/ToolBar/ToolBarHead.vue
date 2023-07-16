@@ -14,9 +14,9 @@
           @click="setCurrentMenuToMenu"
         />
       </div>
-      <div class="tool tool-pri">
+      <!-- <div class="tool tool-pri">
         <Icon icon="material-symbols:route-outline" />
-      </div>
+      </div> -->
       <div class="tool tool-pri tool-pri-last">
         <Icon icon="clarity:plus-line" @click="displayPanel" />
       </div>
@@ -58,6 +58,8 @@ export default {
   height: 60px;
   background-color: #fff;
   flex-direction: column;
+  z-index: 1;
+  position: absolute;
 }
 .tools {
   display: flex;

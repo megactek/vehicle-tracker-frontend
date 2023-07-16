@@ -11,7 +11,7 @@
       >
     </div>
     <div class="error-image">
-      <img src="../public/404.svg" alt="error" />
+      <img src="/404.svg" alt="error" />
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {}
   align-items: center;
 }
 
-@media screen and (max-width: 500px) {
+@media (max-width: 500px) {
   .error {
     grid-template-columns: 1fr;
   }
@@ -39,7 +39,7 @@ export default {}
   }
 
   .error-image img {
-    width: 300px;
+    display: none;
   }
 }
 </style>

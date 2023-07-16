@@ -274,4 +274,10 @@ form {
   width: 100%;
   font-weight: 700;
 }
+
+@media (max-width: 420px) {
+  form {
+    width: 350px;
+  }
+}
 </style>
