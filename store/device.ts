@@ -24,7 +24,6 @@ export const deviceStore = defineStore('devices', {
       payload.forEach((item: any) => (this.$state.items[item.id] = item))
       const filteredPositions = useFilter(this.items, sessionStore().positions)
       sessionStore().updateFilteredPositions(filteredPositions)
-      console.log(this.items)
     },
     select(payload: any) {
       this.$state.selectedId = payload
@@ -45,8 +44,6 @@ export const deviceStore = defineStore('devices', {
     },
   },
   persist: {
-    storage: persistedState.cookiesWithOptions({
-      sameSite: 'strict',
-    }),
+    storage: persistedState.sessionStorage,
   },
 })

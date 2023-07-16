@@ -43,11 +43,14 @@
 import { userData } from '~/store/userData'
 import EditGroupModal from '../Modal/EditGroupModal.vue'
 
+const runtimeConfig = useRuntimeConfig()
+
 export default {
-  props: ['groups', 'getGroups'],
+  props: ['bodyDisplay'],
   data() {
     return {
-      groups: userData().groups,
+      initialGroups: userData().groups,
+      groups: [],
       authCred: userData().credentials,
       error: false,
       errorMsg: '',
@@ -55,12 +58,44 @@ export default {
       editGroupId: 0,
       editGroupName: '',
       editId: 0,
+      isDeleted: false,
+      api: runtimeConfig.public.api,
     }
   },
   components: {
     EditGroupModal,
   },
   methods: {
+    async getGroups() {
+      try {
+        const res = await fetch(`${this.api}/groups`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+        })
+        const returnValue = await res.json()
+        if (res.ok) {
+          userData().logGroups(returnValue)
+          this.groups = userData().groups
+        } else {
+          this.error = true
+          this.errorMsg = 'cannot get groups'
+          setTimeout(() => {
+            this.error = false
+            this.errorMsg = ''
+          }, 3000)
+        }
+      } catch (e) {
+        this.error = true
+        this.errorMsg = e.message
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
+    },
     openEditModal(id, name, groupId) {
       this.shouldOpenEditModal = true
       this.editGroupId = groupId
@@ -80,14 +115,14 @@ export default {
         }, 3000)
       } else {
         try {
-          const res = await fetch(`http://localhost:8082/api/groups/${id}`, {
+          await fetch(`${this.api}/groups/${id}`, {
             method: 'DELETE',
             headers: {
               Authorization: this.authCred,
             },
           })
-          const returnValue = await res.json()
-          console.log(returnValue)
+          this.isDeleted = true
+          this.isDeleted = false
           this.$emit('changeBody', 'add-group')
         } catch (e) {
           // this.error = true
@@ -98,6 +133,20 @@ export default {
           // }, 3000)
         }
       }
+    },
+  },
+  mounted() {
+    // this.getGroups()
+  },
+  watch: {
+    bodyDisplay(before, now) {
+      this.getGroups()
+    },
+    isDeleted(before, now) {
+      this.getGroups()
+    },
+    shouldOpenEditModal(before, now) {
+      this.getGroups()
     },
   },
 }

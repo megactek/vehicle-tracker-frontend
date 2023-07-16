@@ -170,17 +170,21 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
-    background: #222;
+    background: #000;
   }
   .settings-left-icon {
-    color: #fff;
+    color: #ccc;
   }
   .sidebar-icon {
     font-size: 1.5rem;
-    color: #fff;
+    color: #ccc;
   }
   .selected-item {
     background: #333 !important;
+  }
+
+  .head-wrap {
+    border-bottom: 1px solid #333;
   }
 }
 </style>

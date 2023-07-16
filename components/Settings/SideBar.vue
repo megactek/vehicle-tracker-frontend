@@ -73,6 +73,17 @@
         </span>
         <span class="sidebar-span-text">Users</span>
       </div>
+
+      <!-- <div
+        class="sidebar-item"
+        :class="selectedItem === 'route-history' ? 'selected-item' : ''"
+        @click="selected('route-history')"
+      >
+        <span class="sidebar-icon">
+          <Icon icon="material-symbols:route-outline" />
+        </span>
+        <span class="sidebar-span-text">Route History</span>
+      </div> -->
     </div>
   </div>
 </template>

@@ -69,6 +69,8 @@
 import AlertApp from '../components/AlertApp.vue'
 import LoadingApp from '../components/LoadingApp.vue'
 import NuxtLogo from '../components/NuxtLogo.vue'
+import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
 
 definePageMeta({
   title: 'Trakka | Register',
@@ -88,6 +90,7 @@ export default {
       successAlert: false,
       errorAlert: false,
       isAllowed: false,
+      api: runtimeConfig.public.api,
     }
   },
   // const formData = new URLSearchParams()
@@ -95,7 +98,7 @@ export default {
   //       formData.append('password', this.inputPassword)
   methods: {
     async onRegister() {
-      const res = await fetch('http://localhost:8082/api/users', {
+      const res = await fetch(`${this.api}/users`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

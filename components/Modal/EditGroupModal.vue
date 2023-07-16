@@ -29,6 +29,9 @@
   </div>
 </template>
 <script>
+import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
+
 export default {
   props: [
     'authCred',
@@ -42,6 +45,7 @@ export default {
       isBtnActive: false,
       error: false,
       errorMsg: '',
+      api: runtimeConfig.public.api,
     }
   },
   methods: {
@@ -60,22 +64,17 @@ export default {
             name: document.getElementById('edit-name').value,
             groupId: this.editGroupId,
           }
-          const res = await fetch(
-            `http://localhost:8082/api/groups/${this.editId}`,
-            {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: this.authCred,
-              },
-              body: JSON.stringify(obj),
+          const res = await fetch(`${this.api}/groups/${this.editId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: this.authCred,
             },
-          )
-          const returnValue = await res.json()
-          console.log(returnValue)
-
+            body: JSON.stringify(obj),
+          })
           if (res.ok) {
-            this.$emit('closeEditModal')
+            // this.$emit('closeEditModal', true)
+            this.closeEditModal()
           } else {
             this.error = true
             this.errorMsg = 'cannot edit group'
@@ -175,5 +174,11 @@ input {
   align-items: center;
   justify-content: center;
   gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .modal-container {
+    left: 0;
+  }
 }
 </style>

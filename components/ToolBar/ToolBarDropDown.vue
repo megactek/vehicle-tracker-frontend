@@ -4,6 +4,7 @@ import { userData } from '~/store/userData'
 import { sessionStore } from '~/store/sessions'
 import { deviceStore } from '~/store/device'
 
+const props = defineProps(['showDropDown'])
 const selectedId = useState()
 
 const emit = defineEmits(['selectDevice'])
@@ -24,7 +25,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="parent-container">
+  <div
+    :class="showDropDown ? 'parent-container temp-style' : 'parent-container'"
+  >
     <div class="drop-down-container">
       <div class="drop-dwon-items">
         <div
@@ -40,7 +43,7 @@ onMounted(() => {
         >
           <Icon icon="bxs:map" class="icon" />
           <div class="div">
-            <span>{{ device.name }}</span>
+            <span>{{ device.name || device[0].name }}</span>
             <span
               :style="device.status === 'online' ? 'color:green' : 'color:grey'"
               >{{ device.status === 'online' ? 'online' : 'offline' }}</span
@@ -87,6 +90,12 @@ onMounted(() => {
   border-right: 1px solid #e0e0e0;
   width: 350px;
   height: 100%;
+}
+
+.temp-style {
+  z-index: 1;
+  position: absolute;
+  margin-top: 62px;
 }
 
 .drop-down-items {

@@ -23,6 +23,7 @@
       <device-vue
         v-show="bodyDisplay === 'devices'"
         :devices="devices"
+        :bodyDisplay="bodyDisplay"
         @click="closeSmalDeviceSideBar"
       />
       <account-vue
@@ -42,6 +43,7 @@
         @changeBody="changeBody($event)"
         :groups="groups"
         :getGroups="getGroups"
+        :bodyDisplay="bodyDisplay"
         @click="closeSmalDeviceSideBar"
       />
 
@@ -57,6 +59,13 @@
         :users="users"
         @click="closeSmalDeviceSideBar"
       />
+
+      <route-history-vue
+        v-show="bodyDisplay === 'route-history'"
+        @changeBody="changeBody($event)"
+        :history="history"
+        @click="closeSmalDeviceSideBar"
+      />
     </div>
   </div>
 </template>
@@ -64,6 +73,7 @@
 import SideBarVue from '~/components/Settings/SideBar.vue'
 import SmallDeviceSideBar from '~/components/Settings/SmallDeviceSideBar.vue'
 import SmallDeviceTopBar from '~/components/Settings/SmallDeviceTopBar.vue'
+import RouteHistoryVue from '~/components/Settings/RouteHistory.vue'
 import DeviceVue from '~/components/Settings/Device.vue'
 import AccountVue from '~/components/Settings/Account.vue'
 import AddDeviceVue from '~/components/Settings/AddDevice.vue'
@@ -73,12 +83,14 @@ import UsersVue from '~/components/Settings/Users.vue'
 import AlertApp from '../components/AlertApp.vue'
 import LoadingApp from '../components/LoadingApp.vue'
 import { userData } from '~/store/userData'
+const runtimeConfig = useRuntimeConfig()
 
 export default {
   components: {
     SideBarVue,
     SmallDeviceSideBar,
     SmallDeviceTopBar,
+    RouteHistoryVue,
     DeviceVue,
     AccountVue,
     AlertApp,
@@ -92,16 +104,18 @@ export default {
     return {
       bodyDisplay: 'devices',
       user: {},
+      groups: userData().groups,
+      history: [],
       loading: false,
       alert: false,
       successAlert: false,
       errorAlert: false,
       authCred: userData().credentials,
       devices: [],
-      groups: [],
       users: [],
       screenSize: 0,
       isShowSideSmallBar: false,
+      api: runtimeConfig.public.api,
     }
   },
   computed: {},
@@ -123,7 +137,7 @@ export default {
     },
     async getUsers() {
       try {
-        const res = await fetch(`http://localhost:8082/api/users`, {
+        const res = await fetch(`${this.api}/users`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -133,7 +147,6 @@ export default {
         if (res.ok) {
           const returnValue = await res.json()
           this.users = returnValue
-          console.log(returnValue)
           userData().logUsers(returnValue)
         } else {
           this.error = true
@@ -154,7 +167,7 @@ export default {
     },
     async getGroups() {
       try {
-        const res = await fetch(`http://localhost:8082/api/groups`, {
+        const res = await fetch(`${this.api}/groups`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -163,8 +176,6 @@ export default {
         })
         const returnValue = await res.json()
         if (res.ok) {
-          console.log(returnValue)
-          this.groups = returnValue
           userData().logGroups(returnValue)
         } else {
           this.error = true
@@ -185,7 +196,7 @@ export default {
     },
     async getDevices() {
       try {
-        const res = await fetch(`http://localhost:8082/api/devices`, {
+        const res = await fetch(`${this.api}/devices`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -223,8 +234,8 @@ export default {
       this.$router.push({ path: '/login' })
     } else {
       this.getDevices()
-      this.getGroups()
       this.getUsers()
+      this.getGroups()
       this.user = data
     }
     // useNuxt.$socketStore
