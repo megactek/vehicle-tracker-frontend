@@ -131,7 +131,6 @@ export default {
     async addNewDevice() {
       try {
         const { name, uniqueId } = this.getValues()
-        console.log(name, uniqueId, this.uploadData.groupId)
         this.uploadData.name = name
         this.uploadData.uniqueId = uniqueId
         const res = await fetch('http://localhost:8082/api/devices', {

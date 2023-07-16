@@ -1,6 +1,2 @@
-Add loader
-Add error handler page not found
-Add auth handler
-Make every page responsive
 Make offline cars red
 Add routing history

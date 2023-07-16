@@ -40,7 +40,7 @@ onMounted(() => {
         >
           <Icon icon="bxs:map" class="icon" />
           <div class="div">
-            <span>{{ device.name }}</span>
+            <span>{{ device.name || device[0].name }}</span>
             <span
               :style="device.status === 'online' ? 'color:green' : 'color:grey'"
               >{{ device.status === 'online' ? 'online' : 'offline' }}</span

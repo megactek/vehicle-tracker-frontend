@@ -71,7 +71,6 @@ export const sessionStore = defineStore('sessions', {
           this.$state.history = {}
         }
       })
-      console.log(this.positions)
     },
   },
   persist: {

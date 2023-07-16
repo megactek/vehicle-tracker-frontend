@@ -179,7 +179,6 @@ export default {
         const data = JSON.parse(event.data)
         this.getDevices()
         this.getPositions()
-        console.log(data)
         if (data.devices && data.positions) {
           const filteredPositions = useFilter(data.devices, data.positions)
           sessionStore().updateFilteredPositions(filteredPositions)

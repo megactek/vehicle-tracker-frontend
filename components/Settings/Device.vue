@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in devices" :key="item.uniqueId">
+        <tr v-for="item in mainDevices" :key="item.uniqueId">
           <td>{{ item.name }}</td>
           <td>{{ item.uniqueId }}</td>
           <!-- <td>{{ item.category }}</td> -->
@@ -21,6 +21,13 @@
           <!-- <td>{{ item.model }}</td> -->
           <td>{{ item.contact }}</td>
           <td>{{ item.expirationTime }}</td>
+          <td>
+            <div class="utils">
+              <button style="color: red" @click="deleteDevice(item.id)">
+                Delete
+              </button>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -30,12 +37,70 @@
 import { userData } from '~/store/userData'
 
 export default {
-  props: ['devices'],
+  props: ['devices', 'bodyDisplay'],
   inject: ['user'],
   data() {
-    return {}
+    return {
+      authCred: userData().credentials,
+      hasBeenDeleted: null,
+      mainDevices: [],
+    }
   },
-  methods: {},
+  methods: {
+    async getDevices() {
+      try {
+        const res = await fetch(`http://localhost:8082/api/devices`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: this.authCred,
+          },
+        })
+        if (res.ok) {
+          const returnData = await res.json()
+          userData().logDevices(returnData)
+          this.mainDevices = userData().devices
+        } else {
+          this.error = true
+          if (res.status === 401) {
+            this.$router.push('/login')
+          } else {
+            this.errorMsg = 'cannot get devices'
+            setTimeout(() => {
+              this.error = false
+              this.errorMsg = ''
+            }, 3000)
+          }
+        }
+      } catch (e) {
+        this.errorMsg = e
+        setTimeout(() => {
+          this.error = false
+          this.errorMsg = ''
+        }, 3000)
+      }
+    },
+    async deleteDevice(id) {
+      await fetch(`http://localhost:8082/api/devices/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: this.authCred,
+        },
+      })
+      this.hasBeenDeleted = id
+    },
+  },
+  watch: {
+    hasBeenDeleted(old, newVal) {
+      this.getDevices()
+    },
+    bodyDisplay(old, newVal) {
+      this.getDevices()
+    },
+  },
+  mounted() {
+    this.getDevices()
+  },
 }
 </script>
 <style scoped>
@@ -49,13 +114,13 @@ td {
   padding: 8px;
 }
 
-th,
+thead,
 td {
   border-bottom: 1px solid #ddd;
 }
 tr {
   display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-columns: 25% 20% 15% 25% 15%;
 }
 
 td,
@@ -63,7 +128,23 @@ tr {
   text-align: left;
 }
 
-th {
+thead {
   background-color: #f2f2f2;
+}
+
+.utils {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.utils button {
+  padding: 0 5px;
+  border: none;
+  background: transparent;
+  text-transform: lowercase;
+  cursor: pointer;
 }
 </style>

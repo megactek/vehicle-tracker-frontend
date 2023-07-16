@@ -67,7 +67,7 @@ console.log(map)
       <template v-slot:popup>
         <div class="content">
           <div class="name-div">
-            <span>{{ marker.name }}</span>
+            <span>{{ marker.name ||  marker[0].name  }}</span>
           </div>
           <div class="next-div">
             <div>

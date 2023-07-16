@@ -23,6 +23,7 @@
       <device-vue
         v-show="bodyDisplay === 'devices'"
         :devices="devices"
+        :bodyDisplay="bodyDisplay"
         @click="closeSmalDeviceSideBar"
       />
       <account-vue
@@ -42,6 +43,7 @@
         @changeBody="changeBody($event)"
         :groups="groups"
         :getGroups="getGroups"
+        :bodyDisplay="bodyDisplay"
         @click="closeSmalDeviceSideBar"
       />
 
@@ -57,6 +59,13 @@
         :users="users"
         @click="closeSmalDeviceSideBar"
       />
+
+      <route-history-vue
+        v-show="bodyDisplay === 'route-history'"
+        @changeBody="changeBody($event)"
+        :history="history"
+        @click="closeSmalDeviceSideBar"
+      />
     </div>
   </div>
 </template>
@@ -64,6 +73,7 @@
 import SideBarVue from '~/components/Settings/SideBar.vue'
 import SmallDeviceSideBar from '~/components/Settings/SmallDeviceSideBar.vue'
 import SmallDeviceTopBar from '~/components/Settings/SmallDeviceTopBar.vue'
+import RouteHistoryVue from '~/components/Settings/RouteHistory.vue'
 import DeviceVue from '~/components/Settings/Device.vue'
 import AccountVue from '~/components/Settings/Account.vue'
 import AddDeviceVue from '~/components/Settings/AddDevice.vue'
@@ -79,6 +89,7 @@ export default {
     SideBarVue,
     SmallDeviceSideBar,
     SmallDeviceTopBar,
+    RouteHistoryVue,
     DeviceVue,
     AccountVue,
     AlertApp,
@@ -92,13 +103,14 @@ export default {
     return {
       bodyDisplay: 'devices',
       user: {},
+      groups: userData().groups,
+      history: [],
       loading: false,
       alert: false,
       successAlert: false,
       errorAlert: false,
       authCred: userData().credentials,
       devices: [],
-      groups: [],
       users: [],
       screenSize: 0,
       isShowSideSmallBar: false,
@@ -133,7 +145,6 @@ export default {
         if (res.ok) {
           const returnValue = await res.json()
           this.users = returnValue
-          console.log(returnValue)
           userData().logUsers(returnValue)
         } else {
           this.error = true
@@ -163,8 +174,6 @@ export default {
         })
         const returnValue = await res.json()
         if (res.ok) {
-          console.log(returnValue)
-          this.groups = returnValue
           userData().logGroups(returnValue)
         } else {
           this.error = true
@@ -223,8 +232,8 @@ export default {
       this.$router.push({ path: '/login' })
     } else {
       this.getDevices()
-      this.getGroups()
       this.getUsers()
+      this.getGroups()
       this.user = data
     }
     // useNuxt.$socketStore

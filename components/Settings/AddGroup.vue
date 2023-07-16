@@ -65,9 +65,6 @@ export default {
               attributes: {},
             }),
           })
-          const returnValue = await res.json()
-          console.log(returnValue)
-
           if (res.ok) {
             this.$emit('changeBody', 'groups')
           } else {

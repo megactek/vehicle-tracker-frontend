@@ -71,11 +71,9 @@ export default {
               body: JSON.stringify(obj),
             },
           )
-          const returnValue = await res.json()
-          console.log(returnValue)
-
           if (res.ok) {
-            this.$emit('closeEditModal')
+            // this.$emit('closeEditModal', true)
+            this.closeEditModal()
           } else {
             this.error = true
             this.errorMsg = 'cannot edit group'
@@ -175,5 +173,11 @@ input {
   align-items: center;
   justify-content: center;
   gap: 2rem;
+}
+
+@media (max-width: 900px) {
+  .modal-container {
+    left: 0;
+  }
 }
 </style>
