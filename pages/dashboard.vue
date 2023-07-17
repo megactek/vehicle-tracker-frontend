@@ -140,7 +140,7 @@ export default {
       const host = runtimeConfig.public.wsApi
       const sessionId = this.getSessionId()
       const session = `JSESSIONID=${sessionId}`
-      const socket = new WebSocket(`ws://${window.location.host}/api/socket`) //?session=${encodeURIComponent(session)}
+      const socket = new WebSocket(`wss://${window.location.host}/api/socket`) //?session=${encodeURIComponent(session)}
       socketRef.current = socket
 
       socket.onopen = () => {
