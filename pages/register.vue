@@ -58,7 +58,7 @@
           >
             Submit
           </button>
-          <p class="error-msg">{{ msg }}</p>
+          <!-- <p class="error-msg">{{ msg }}</p> -->
         </form>
       </div>
     </div>
@@ -98,28 +98,40 @@ export default {
   //       formData.append('password', this.inputPassword)
   methods: {
     async onRegister() {
-      const res = await fetch(`${this.api}/users`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: this.inputName,
-          email: this.inputEmail,
-          password: this.inputPassword,
-        }),
-      })
-      if (res.ok) {
-        this.msg = 'Registration Successful'
-        this.successAlert = true
-        this.loading = true
-        this.alert = true
-        setTimeout(() => {
-          this.alert = false
-          this.loading = false
-          this.successAlert = false
-          this.$router.push({ path: '/login' })
-        }, 3000)
-      } else {
-        this.msg = 'Registration Failed'
+      try {
+        const res = await fetch(`${this.api}/users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: this.inputName,
+            email: this.inputEmail,
+            password: this.inputPassword,
+          }),
+        })
+        if (res.ok) {
+          this.msg = 'Registration Successful'
+          this.successAlert = true
+          this.loading = true
+          this.alert = true
+          setTimeout(() => {
+            this.alert = false
+            this.loading = false
+            this.successAlert = false
+            this.$router.push({ path: '/login' })
+          }, 3000)
+        } else {
+          this.msg = 'Registration Failed'
+          this.loading = true
+          this.alert = true
+          this.errorAlert = true
+          setTimeout(() => {
+            this.alert = false
+            this.errorAlert = false
+            this.loading = false
+          }, 3000)
+        }
+      } catch (e) {
+        this.msg = e.text
         this.loading = true
         this.alert = true
         this.errorAlert = true

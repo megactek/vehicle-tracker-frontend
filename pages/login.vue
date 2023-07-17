@@ -112,31 +112,45 @@ export default {
       userData().logCredential(authorizationHeader)
     },
     async onLogin() {
-      const formData = new URLSearchParams()
-      formData.append('email', this.inputEmail)
-      formData.append('password', this.inputPassword)
-      const res = await fetch(`${this.api}/session`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formData,
-      })
-      const returnValue = await res.json()
-      // this.generateLoginToken()
-      if (res.ok) {
-        this.getDevices()
-        this.msg = 'Login Successful'
-        this.successAlert = true
-        this.loading = true
-        this.alert = true
-        setTimeout(() => {
-          this.alert = false
-          this.loading = false
-          this.successAlert = false
-          userData().logUser(returnValue, true)
-          this.$router.push({ path: '/dashboard' })
-        }, 3000)
-      } else {
-        this.msg = 'Login Failed'
+      try {
+        const formData = new URLSearchParams()
+        formData.append('email', this.inputEmail)
+        formData.append('password', this.inputPassword)
+        const res = await fetch(`/api/session`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData,
+        })
+        console.log(res)
+        const returnValue = await res.json()
+        // this.generateLoginToken()
+        if (res.ok) {
+          this.getDevices()
+          this.msg = 'Login Successful'
+          this.successAlert = true
+          this.loading = true
+          this.alert = true
+          setTimeout(() => {
+            this.alert = false
+            this.loading = false
+            this.successAlert = false
+            userData().logUser(returnValue, true)
+            this.$router.push({ path: '/dashboard' })
+          }, 3000)
+        } else {
+          this.msg = 'Login Failed'
+          this.loading = true
+          this.alert = true
+          this.errorAlert = true
+          setTimeout(() => {
+            this.alert = false
+            this.errorAlert = false
+            this.loading = false
+          }, 3000)
+        }
+      } catch (e) {
+        console.log(e)
+        this.msg = 'User not found'
         this.loading = true
         this.alert = true
         this.errorAlert = true

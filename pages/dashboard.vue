@@ -126,14 +126,30 @@ export default {
     toggleDropDown() {
       this.showDropDown = !this.showDropDown
     },
+    getSessionId() {
+      const cookies = document.cookie.split(';')
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim()
+        if (cookie.startsWith('JSESSIONID' + '=')) {
+          return cookie.substring('JSESSIONID'.length + 1)
+        }
+      }
+      return null
+    },
     connectSocket() {
       const host = runtimeConfig.public.wsApi
-      const socket = new WebSocket(host)
+      const sessionId = this.getSessionId()
+      const session = `JSESSIONID=${sessionId}`
+      const socket = new WebSocket(`ws://${window.location.host}/api/socket`) //?session=${encodeURIComponent(session)}
       socketRef.current = socket
 
       socket.onopen = () => {
+        socket.setRequestHeader('Cookie', session)
         sessionStore().updateSocket(true)
         console.log('Websocket Server Connected!!')
+        socket.send(
+          JSON.stringify({ type: 'session', value: this.getSessionId() }),
+        )
       }
 
       socket.onclose = async (event) => {
