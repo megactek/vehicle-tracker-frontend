@@ -25,4 +25,16 @@ export default defineNuxtConfig({
       },
     },
   },
+  nitro: {
+    routeRules: {
+      '/api': { proxy: 'https://demo4.traccar.org/api', cors: true },
+    },
+    // devProxy: {
+    //   '/socket': {
+    //     target: 'wss://demo4.traccar.org/api/socket',
+    //     changeOrigin:true,
+    //     prependPath:true,
+    //   },
+    // },
+  },
 })
