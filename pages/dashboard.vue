@@ -144,7 +144,7 @@ export default {
       socketRef.current = socket
 
       socket.onopen = () => {
-        socket.setRequestHeader('Cookie', session)
+        socket.send('Cookie: ', session)
         sessionStore().updateSocket(true)
         console.log('Websocket Server Connected!!')
         socket.send(
