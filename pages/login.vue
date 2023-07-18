@@ -116,7 +116,7 @@ export default {
         const formData = new URLSearchParams()
         formData.append('email', this.inputEmail)
         formData.append('password', this.inputPassword)
-        const res = await fetch(`/api/session`, {
+        const res = await fetch(`${this.api}/session`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: formData,
