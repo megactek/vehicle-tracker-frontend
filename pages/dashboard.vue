@@ -49,6 +49,7 @@ export default {
       devices: deviceStore().items,
       selectedDeviceId: deviceStore().selectedId,
       api: runtimeConfig.public.api,
+      wsApi: runtimeConfig.public.wsApi,
     }
   },
   methods: {
@@ -140,7 +141,7 @@ export default {
       const host = runtimeConfig.public.wsApi
       const sessionId = this.getSessionId()
       const session = `JSESSIONID=${sessionId}`
-      const socket = new WebSocket(`wss://${window.location.host}/api/socket`) //?session=${encodeURIComponent(session)}
+      const socket = new WebSocket(`${this.wsApi}/socket`) //?session=${encodeURIComponent(session)}
       socketRef.current = socket
 
       socket.onopen = () => {
