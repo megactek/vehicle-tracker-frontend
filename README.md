@@ -1,63 +1,9 @@
-# Nuxt 3 Minimal Starter
+# Vehicle Tracker Frontend
+Create an `.env` file in your root directory and add this variables:
+* NUXT_MAPBOX_API_KEY= 'your mapbox public key'
+* API= 'the server url and /api endpoint at the end'
+* WSAPI= 'the websocket url and /api endpoint at the end'
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Download Traccar Demo server and install on your PC to run locally and add the url `http://localhost:8082/api` to the `API` variable or add a live demo server url to the `API` variable.[https://traccar.org/documentation/].
 
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Run yarn dev to run in development mode then  go to 'http://localhost:3000' on your browser.
