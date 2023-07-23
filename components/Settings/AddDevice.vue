@@ -10,7 +10,8 @@
             type="text"
             placeholder="Name"
             id="name"
-            @mouseenter="doesFormHaveValues"
+            v-model="name"
+            @keyup="doesFormHaveValues"
           />
         </div>
         <div class="el">
@@ -18,7 +19,8 @@
             type="text"
             placeholder="Identifier"
             id="uniqueId"
-            @mouseenter="doesFormHaveValues"
+            v-model="uniqueId"
+            @keyup="doesFormHaveValues"
           />
         </div>
         <div class="txt-hint">
@@ -47,7 +49,7 @@
                 :key="group.id"
                 :value="group.groupId"
               >
-                {{ group.name ? group.name : '' }}
+                {{ group.name }}
               </option>
             </select>
             <select
