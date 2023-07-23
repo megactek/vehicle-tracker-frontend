@@ -25,10 +25,10 @@ export default defineNuxtConfig({
       },
     },
   },
-  nitro: {
-    routeRules: {
-      '/api': { proxy: 'https://demo4.traccar.org/api' },
-    },
+  // nitro: {
+  //   routeRules: {
+  //     '/api': { proxy: 'https://demo4.traccar.org/api' },
+  //   },
     // devProxy: {
     //   '/socket': {
     //     target: 'wss://demo4.traccar.org/api/socket',
@@ -36,5 +36,5 @@ export default defineNuxtConfig({
     //     prependPath:true,
     //   },
     // },
-  },
+  // },
 })

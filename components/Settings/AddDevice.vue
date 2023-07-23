@@ -278,9 +278,10 @@ form {
   font-weight: 700;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 450px) {
   form {
     width: 350px;
+    margin-top: 2rem;
   }
 }
 </style>
