@@ -9,7 +9,6 @@
           <input
             type="text"
             placeholder="Name"
-            v-model="defaultDevice.name"
             id="name"
             @mouseenter="doesFormHaveValues"
           />
@@ -19,7 +18,6 @@
             type="text"
             placeholder="Identifier"
             id="uniqueId"
-            v-model="defaultDevice.uniqueId"
             @mouseenter="doesFormHaveValues"
           />
         </div>
@@ -38,14 +36,27 @@
         </div>
         <div v-show="dropDownOn">
           <div class="el">
-            <select name="groups" id="groups" v-model="uploadData.groupId">
+            <select
+              name="groups"
+              id="groups"
+              v-model="uploadData.groupId"
+              v-show="groups.length"
+            >
               <option
                 v-for="group in groups"
                 :key="group.id"
                 :value="group.groupId"
               >
-                {{ group.name }}
+                {{ group.name ? group.name : '' }}
               </option>
+            </select>
+            <select
+              name="groups"
+              id=""
+              v-model="uploadData.groupId"
+              v-show="!groups"
+            >
+              <option :value="no - group"></option>
             </select>
           </div>
           <div class="el">
@@ -79,7 +90,7 @@ export default {
       uniqueId: '',
       defaultDevice: userData().devices[userData().devices.length - 1],
       isBtnAllowed: false,
-      groups: userData().groups,
+      groups: userData().groups || false,
       dropDownOn: false,
       authCred: userData().credentials,
       error: false,
@@ -281,7 +292,7 @@ form {
 @media (max-width: 450px) {
   form {
     width: 350px;
-    margin-top: 2rem;
+    margin-top: 3rem;
   }
 }
 </style>
